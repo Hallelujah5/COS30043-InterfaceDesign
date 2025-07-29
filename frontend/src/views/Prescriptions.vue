@@ -1,3 +1,7 @@
+<!-- FILE: src/pages/Prescriptions.vue -->
+<!-- -->
+<!-- My page for uploading medical prescriptions. -->
+
 <template>
   <div class="min-vh-100 bg-light">
     <Navbar />
@@ -17,7 +21,7 @@
             <div class="card-body">
               <form @submit.prevent="handleSubmit" class="vstack gap-4">
                 <div>
-                  <label for="prescription-files" class="form-label">Upload Prescription Images</label>
+                  <label class="form-label">Upload Prescription Images</label>
                   <div class="border border-2 border-secondary border-dashed rounded p-4 text-center">
                     <Upload class="text-secondary mb-3" :size="40" />
                     <p class="text-muted">
@@ -86,6 +90,7 @@ import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import { Upload, FileText, CheckCircle } from 'lucide-vue-next';
 import api from '@/api';
+import { showSuccess, showError, showInfo } from '@/utils/toast';
 
 export default {
   name: 'PrescriptionsPage',
@@ -113,41 +118,47 @@ export default {
       const file = event.target.files?.[0];
       if (!file) return;
       this.uploadedFile = file;
-      alert('1 file(s) uploaded successfully.');
+      showSuccess(`File "${file.name}" selected.`);
     },
     removeFile() {
       this.uploadedFile = null;
     },
     async handleSubmit() {
       if (!this.uploadedFile) {
-        alert('Please upload at least one file.');
+        showError('Please upload a prescription file.');
         return;
       }
       const storedUser = localStorage.getItem('user');
       if (!storedUser) {
+        showError('You must be logged in to upload a prescription.');
         this.$router.push('/login');
         return;
       }
+      
       const customerId = JSON.parse(storedUser).id;
       const formData = new FormData();
       formData.append('customer_id', customerId);
       formData.append('notes', this.notes);
       formData.append('file', this.uploadedFile);
 
+      showInfo('Uploading prescription...');
+
       try {
         await api.post('/prescriptions/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
         });
-        alert('Prescription uploaded successfully!');
+        showSuccess('Prescription uploaded successfully!');
         this.uploadedFile = null;
         this.notes = '';
       } catch (error) {
-        alert('Upload failed.');
+        showError('Upload failed. Please try again.');
       }
     },
   },
   created() {
+    // This hook checks if the user is logged in when the component is created.
     if (!localStorage.getItem('user')) {
+      showError('Please log in to access this page.');
       this.$router.push('/login');
     }
   },

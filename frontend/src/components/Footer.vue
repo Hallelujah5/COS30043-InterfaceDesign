@@ -1,16 +1,10 @@
-<!-- FILE: src/components/Footer.vue -->
-<!-- -->
-<!-- The main footer for the application, consistent across all pages. -->
-
 <template>
   <footer class="bg-dark text-light py-5">
     <div class="container">
       <div class="row gy-4">
-        <!-- Company Info -->
         <div class="col-md-3">
           <div class="d-flex align-items-center mb-3">
-            <!-- Image path assumes 'Longchau.png' is in the 'public' directory -->
-            <img src="/Longchau.png" alt="Longchau Pharmacy Logo" width="200"/>
+            <img src="/Longchau2.png" alt="Longchau Pharmacy Logo" width="200"/>
           </div>
           <p class="text-secondary small">
             Your trusted pharmaceutical marketplace connecting patients with licensed pharmacies worldwide.
@@ -25,7 +19,7 @@
         <!-- Quick Links -->
         <div class="col-md-3">
           <h6 class="fw-semibold mb-3">Quick Links</h6>
-          <ul class="list-unstyled small">
+          <ul class="list-unstyled small">  
             <li><router-link to="/medicines" class="text-secondary text-decoration-none">Browse Medicines</router-link></li>
             <li><router-link to="/prescriptions" class="text-secondary text-decoration-none">Upload Prescription</router-link></li>
             <li><router-link to="/sell" class="text-secondary text-decoration-none">Become a Seller</router-link></li>

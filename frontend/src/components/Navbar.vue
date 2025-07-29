@@ -5,7 +5,7 @@
       <router-link to="/" class="navbar-brand d-flex align-items-center">
         <div class="bg-primary text-white p-2 rounded me-2">
           <!-- The image path is relative to the public folder in a typical Vue setup -->
-          <img src="/Longchau.png" alt="Longchau Pharmacy Logo" width="200" />
+          <img src="/Longchau2.png" alt="Longchau Pharmacy Logo" width="200" />
         </div>
       </router-link>
 

@@ -96,14 +96,13 @@
 </template>
 
 <script>
-import { useCartStore } from '@/stores/cart'; // Import the Pinia store
-// Assuming a similar toast utility is created for Vue
-// import { showError, showSuccess } from '@/utils/toast';
+import { useCartStore } from '@/stores/cart';
+// Importing my toast utility functions
+import { showSuccess, showError } from '@/utils/toast';
 
 export default {
   name: 'FeaturedMedicines',
   data() {
-    // The component's local state
     return {
       medicines: [
         {
@@ -115,7 +114,7 @@ export default {
           rating: 4.5,
           inStock: true,
           prescription: false,
-          image_url: "/src/assets/Paracetamol.jpg", // Paths should be relative to the public folder or handled by the build process
+          image_url: "/src/assets/Paracetamol.jpg",
         },
         {
           product_id: 2,
@@ -154,26 +153,20 @@ export default {
     };
   },
   methods: {
-    // Component methods, equivalent to functions defined in the React component body
     handleAddToCart(medicine) {
       if (!medicine.inStock) return;
-
       const hasPrescription = localStorage.getItem("has_prescription") === "true";
       if (medicine.prescription && !hasPrescription) {
-        // showError("You need an approved prescription to buy this medicine.");
-        alert("You need an approved prescription to buy this medicine."); // Using alert as placeholder
+        showError("You need an approved prescription to buy this medicine.");
         return;
       }
 
-      // Get the cart store instance
       const cartStore = useCartStore();
-      cartStore.addToCart(medicine); // Call the action from the Pinia store
+      cartStore.addToCart(medicine);
 
-      // showSuccess(`${medicine.name} added to cart!`);
-      alert(`${medicine.name} added to cart!`); // Using alert as placeholder
+      showSuccess(`${medicine.name} added to cart!`);
     },
     viewDetails(productId) {
-      // Use the Vue router instance to navigate programmatically
       this.$router.push(`/medicine/${productId}`);
     },
   },

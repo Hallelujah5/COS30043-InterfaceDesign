@@ -101,7 +101,6 @@ const router = createRouter({
     //     component: TaskDelegation,
     // },
     {
-      // This is the catch-all route, equivalent to path="*" in React Router
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: NotFound,

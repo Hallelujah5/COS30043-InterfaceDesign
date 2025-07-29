@@ -1,7 +1,3 @@
-<!-- FILE: src/pages/Index.vue -->
-<!-- -->
-<!-- Main home page component. Assembles the primary sections of the page. -->
-
 <template>
   <div class="min-h-screen">
     <Navbar />
@@ -31,7 +27,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-
-</style>

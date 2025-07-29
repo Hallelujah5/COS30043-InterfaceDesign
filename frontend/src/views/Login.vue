@@ -1,3 +1,6 @@
+<!-- FILE: src/pages/Login.vue -->
+<!-- -->
+<!-- This page handles both user login and registration. -->
 
 <template>
   <div
@@ -150,14 +153,16 @@
 <script>
 import { LogIn, User } from 'lucide-vue-next';
 import api from '@/api';
+// Importing my toast utility functions
+import { showInfo, showSuccess, showError } from '@/utils/toast';
 
 export default {
   name: 'LoginPage',
   components: { LogIn, User },
   data() {
     return {
-      activeRole: 'Customer', // 'Customer' or 'Staff'
-      activeTab: 'login', // 'login' or 'register'
+      activeRole: 'Customer',
+      activeTab: 'login',
       loginData: { email: '', password: '' },
       registerData: {
         fname: '',
@@ -174,10 +179,10 @@ export default {
     async handleLogin() {
       const { email, password } = this.loginData;
       if (!email || !password) {
-        alert('Please enter email and password!');
+        showError('Please enter email and password!');
         return;
       }
-      alert('Logging in...'); // Placeholder for toast
+      showInfo('Logging in...');
 
       const endpoint = this.activeRole === 'Customer' ? '/auth/customers/login' : '/auth/staff/login';
 
@@ -191,27 +196,27 @@ export default {
           role: res.data.role,
         };
 
-        if (user.role !== 'Customer' && user.role !== null) {
-          user.has_prescription = true;
-          user.id = res.data.user_id; // Keep original staff ID
-        }
+        // if (user.role !== 'Customer' && user.role !== null) {
+        //   user.has_prescription = true;
+        //   user.id = res.data.user_id;
+        // }
 
         localStorage.setItem('user', JSON.stringify(user));
-        alert('Login successful!'); // Placeholder for toast
+        showSuccess('Login successful!');
         this.$router.push('/');
       } catch (err) {
         const msg = err.response?.data?.detail || 'Login failed. Please try again.';
-        alert(msg); // Placeholder for toast
+        showError(msg);
       }
     },
     async handleRegister() {
       const { fname, lname, email, password, confirmPassword, phone_number, address } = this.registerData;
       if (!fname || !lname || !email || !password || !confirmPassword) {
-        alert('Please fill out all required fields!');
+        showError('Please fill out all required fields!');
         return;
       }
       if (password !== confirmPassword) {
-        alert('Passwords do not match!');
+        showError('Passwords do not match!');
         return;
       }
 
@@ -226,13 +231,13 @@ export default {
       };
 
       try {
-        alert('Registering... Please wait.'); // Placeholder for toast
+        showInfo('Registering... Please wait.');
         const res = await api.post('/customers/register', payload);
-        alert(res.data.message || 'Registration successful!'); // Placeholder for toast
-        this.activeTab = 'login'; // Switch to login tab after successful registration
+        showSuccess(res.data.message || 'Registration successful!');
+        this.activeTab = 'login';
       } catch (err) {
         const msg = err.response?.data?.detail || 'Registration failed.';
-        alert(msg); // Placeholder for toast
+        showError(msg);
       }
     },
   },

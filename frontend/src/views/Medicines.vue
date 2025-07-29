@@ -1,6 +1,6 @@
 <!-- FILE: src/pages/Medicines.vue -->
 <!-- -->
-<!-- This page displays all available medicines, with search and filter functionality. -->
+<!-- This page displays all available medicines, with search, filter, and favorite functionality. -->
 
 <template>
   <div class="bg-light min-vh-100">
@@ -18,7 +18,6 @@
           <div class="col-lg">
             <div class="position-relative">
               <Search class="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" />
-              <!-- v-model provides two-way data binding for the search input -->
               <input
                 type="text"
                 class="form-control ps-5"
@@ -28,10 +27,8 @@
             </div>
           </div>
           <div class="col-lg-auto">
-            <!-- v-model also binds the selected category -->
             <select class="form-select" v-model="selectedCategory">
               <option value="all">All Categories</option>
-              <!-- Loop through the unique categories computed property -->
               <option v-for="cat in uniqueCategories" :key="cat" :value="cat">
                 {{ cat }}
               </option>
@@ -62,21 +59,26 @@
 
         <!-- Products Grid -->
         <div class="row g-4">
-          <!-- v-for loops through the computed filteredProducts array -->
           <div v-for="p in filteredProducts" :key="p.product_id" class="col-md-6 col-lg-4 d-flex">
             <div class="card h-100 shadow-sm w-100">
               <div class="card-header">
-                <div class="text-center mb-3">
-                  <div
-                    class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center"
-                    :style="{ width: '150px', height: '150px' }"
-                  >
-                    <img
-                      :src="p.image_url || '/default-product.png'"
-                      :alt="p.name"
-                      style="width: 100%; height: 100%; object-fit: contain;"
-                    />
-                  </div>
+                <div class="position-relative">
+                    <div class="text-center mb-3">
+                        <div
+                            class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center"
+                            :style="{ width: '150px', height: '150px' }"
+                        >
+                            <img
+                            :src="p.image_url || '/default-product.png'"
+                            :alt="p.name"
+                            style="width: 100%; height: 100%; object-fit: contain;"
+                            />
+                        </div>
+                    </div>
+                    <!-- My new Favorite button -->
+                    <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2" @click="toggleFavorite(p.product_id)">
+                        <Heart class="favorite-icon" :class="{ favorited: isFavorited(p.product_id) }" />
+                    </button>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <span
@@ -109,7 +111,7 @@
         </div>
 
         <!-- No Results Message -->
-        <div v-if="filteredProducts.length === 0" class="text-center py-5">
+        <div v-if="!loading && filteredProducts.length === 0" class="text-center py-5">
           <div class="fs-1 text-muted mb-3">🔍</div>
           <h4>No medicines found</h4>
           <p class="text-muted">Try adjusting your search terms or filters</p>
@@ -126,27 +128,30 @@ import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import { useCartStore } from '@/stores/cart';
 import api from '@/api';
-import { ShoppingCart, Search, Filter } from 'lucide-vue-next';
+import { ShoppingCart, Search, Filter, Heart } from 'lucide-vue-next';
+import { showSuccess, showError } from '@/utils/toast';
 
 export default {
   name: 'MedicinesPage',
-  components: { Navbar, Footer, ShoppingCart, Search, Filter },
+  components: { Navbar, Footer, ShoppingCart, Search, Filter, Heart },
   data() {
     return {
       loading: true,
       searchTerm: "",
       selectedCategory: "all",
       products: [],
+      favorites: [], // To store the IDs of favorited medicines
     };
   },
   computed: {
-    // Computed properties are reactive and cache their results.
-    // They automatically update when their dependencies (like 'products' or 'searchTerm') change.
     uniqueCategories() {
       const categories = this.products.map(p => p.category);
       return [...new Set(categories)];
     },
     filteredProducts() {
+      if (this.loading) {
+        return [];
+      }
       return this.products.filter(p => {
         const matchesSearch =
           p.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
@@ -158,19 +163,53 @@ export default {
     },
   },
   methods: {
+    isFavorited(productId) {
+        // Check if the product ID is in my favorites array
+        return this.favorites.includes(productId);
+    },
+    async toggleFavorite(productId) {
+        const user = localStorage.getItem("user");
+        if (!user) {
+            showError("You must be logged in to favorite items.");
+            return;
+        }
+
+        const isCurrentlyFavorited = this.isFavorited(productId);
+        
+        // Optimistically update the UI for a faster user experience
+        if (isCurrentlyFavorited) {
+            this.favorites = this.favorites.filter(id => id !== productId);
+        } else {
+            this.favorites.push(productId);
+        }
+
+        try {
+            // This is where I'd make the real API call to my backend
+            // The endpoint would handle adding/removing the favorite for the logged-in user
+            await api.post(`/products/${productId}/favorite`);
+        } catch (err) {
+            showError("Failed to update favorite status.");
+            // If the API call fails, revert the change in the UI
+            if (isCurrentlyFavorited) {
+                this.favorites.push(productId);
+            } else {
+                this.favorites = this.favorites.filter(id => id !== productId);
+            }
+        }
+    },
     handleAddToCart(product) {
       const user = localStorage.getItem("user");
       const userParse = user ? JSON.parse(user) : null;
       const hasPrescription = userParse?.has_prescription;
 
       if (product.is_prescription_required && !hasPrescription) {
-        alert("You need an approved prescription to buy this medicine."); // Placeholder for toast notification
+        showError("You need an approved prescription to buy this medicine.");
         return;
       }
       
       const cartStore = useCartStore();
       cartStore.addToCart(product);
-      alert(`${product.name} added to cart!`); // Placeholder for toast notification
+      showSuccess(`${product.name} added to cart!`);
     },
     viewDetails(productId) {
       this.$router.push(`/medicine/${productId}`);
@@ -180,16 +219,28 @@ export default {
         const res = await api.get("/products");
         this.products = res.data;
       } catch (err) {
-        alert("Failed to load products"); // Placeholder for toast notification
+        showError("Failed to load products");
       } finally {
         this.loading = false;
       }
     },
+    async fetchFavorites() {
+        const user = localStorage.getItem("user");
+        if (!user) return; // Don't fetch if no user is logged in
+        
+        try {
+            // My API call to get the list of favorited product IDs for the current user
+            const res = await api.get('/favorites');
+            this.favorites = res.data.map(fav => fav.product_id); // Assuming the API returns an array of objects
+        } catch (err) {
+            console.error("Could not fetch favorites.");
+            // No need to show an error, the user just won't see their favorites
+        }
+    }
   },
   mounted() {
-    // mounted() is the hook to call when the component is first loaded,
-    // similar to useEffect with an empty dependency array.
     this.fetchProducts();
+    this.fetchFavorites();
   },
 };
 </script>
@@ -198,5 +249,19 @@ export default {
 .card-footer {
     background-color: white;
     border-top: none;
+}
+
+.favorite-icon {
+    color: #adb5bd; /* Default color for the heart outline */
+    transition: color 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.favorite-icon.favorited {
+    color: #dc3545; /* Red color when favorited */
+    fill: #dc3545; /* Fill the heart when favorited */
+}
+
+.btn:hover .favorite-icon {
+    transform: scale(1.1);
 }
 </style>
