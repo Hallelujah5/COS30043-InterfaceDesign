@@ -1,7 +1,3 @@
-<!-- FILE: src/components/FeaturedMedicines.vue -->
-<!-- -->
-<!-- This component displays a grid of featured medicines on the home page. -->
-
 <template>
   <section class="py-5 bg-white">
     <div class="container">
