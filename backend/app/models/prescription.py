@@ -25,4 +25,4 @@ class Prescription(Base):
     notifications = relationship("Notification", back_populates="prescription")
 
     def __repr__(self):
-        return f"<Prescription(id={self.prescription_id}, status='{self.validation_status}', customer_id={self.customer_id})>"
+        return f"<Prescription(id={self.prescription_id}, status='{self.validation_status}', customer_id={self.customer_id})>"  

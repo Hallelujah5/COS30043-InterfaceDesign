@@ -53,7 +53,7 @@
             <div class="mb-3">
               <label class="form-label fw-semibold">Payment Method</label>
               <select class="form-select" v-model="paymentMethods[order.order_id]">
-                <option value="">Select a method</option>
+                <option value="" disabled >Select a method</option>
                 <option value="Credit Card">Credit Card</option>
                 <option value="Debit Card">Debit Card</option>
                 <option value="Cash">Cash</option>
@@ -79,6 +79,7 @@ import { CreditCard, Package, Clock, DollarSign } from 'lucide-vue-next';
 import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import api from '@/api';
+import { showSuccess, showError, showInfo } from '@/utils/toast';
 
 export default {
   name: 'PaymentsPage',
@@ -100,13 +101,17 @@ export default {
       this.loading = true;
       try {
         const response = await api.get(`/payments/${customerId}/pending-payments`);
+        console.log(response.data);
         const { pending_payments } = response.data;
+        console.log("Pending payments", pending_payments);
         this.unpaidOrders = pending_payments;
         this.unpaidOrders.forEach(order => {
-          this.$set(this.paymentMethods, order.order_id, '');
+          this.paymentMethods[order.order_id]= '';
         });
       } catch (error) {
-        alert('Failed to load unpaid orders.');
+        const msg = error.response?.data?.detail || 'Failed to load unpaid orders.';
+        showError(msg);
+        console.log(error);
       } finally {
         this.loading = false;
       }
@@ -114,7 +119,7 @@ export default {
     async processPayment(orderId) {
       const method = this.paymentMethods[orderId];
       if (!method) {
-        alert(`Please select a payment method for Order #${orderId}`);
+        showError(`Please select a payment method for Order #${orderId}`);
         return;
       }
       try {
@@ -122,18 +127,19 @@ export default {
           order_id: orderId,
           payment_method: method,
         });
-        alert(`Order #${orderId} has been paid with ${method}.`);
+        showSuccess(`Order #${orderId} has been paid with ${method}.`);
         this.unpaidOrders = this.unpaidOrders.filter(o => o.order_id !== orderId);
       } catch (error) {
-        alert(`Failed to pay for order #${orderId}.`);
+        showError(`Failed to pay for order #${orderId}.`);
       }
     },
   },
   created() {
     const storedUser = localStorage.getItem('user');
+    if (!storedUser) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
     if (storedUser) {
       const customer = JSON.parse(storedUser);
-      this.fetchUnpaidOrders(customer.id);
+      this.fetchUnpaidOrders(customer.user_id);
     }
   },
 };

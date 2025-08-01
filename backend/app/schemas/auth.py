@@ -15,9 +15,9 @@ class LoginResponse(BaseModel):
     role: str
     message: str
     has_prescription: Optional[bool] = None
-    # In a real application return a JWT access token.
-    # access_token: str
-    # token_type: str = "bearer"
+    
+    access_token: str
+    token_type: str = "bearer"
 
     class Config:
         from_attributes = True

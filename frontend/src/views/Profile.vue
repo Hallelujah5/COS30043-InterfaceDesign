@@ -99,6 +99,7 @@
 import { User, Calendar, Package, Edit3, Save, X } from 'lucide-vue-next';
 import Navbar from '@/components/Navbar.vue';
 import api from '@/api';
+import { showSuccess, showError, showInfo } from '@/utils/toast';
 
 export default {
   name: 'ProfilePage',
@@ -121,11 +122,14 @@ export default {
   },
   methods: {
     async fetchCustomerDetails() {
+      console.log("fetching user in /profile...")
       const data = localStorage.getItem('user');
+      console.log("User fetched: ", data);
       if (!data) return this.$router.push('/login');
       const parsed = JSON.parse(data);
+      console.log("Parsed data: ", parsed);
       try {
-        const res = await api.get(`/customers/${parsed.id}`);
+        const res = await api.get(`/customers/${parsed.user_id}`);
         this.user = res.data;
         this.form = {
           fname: this.user.first_name,
@@ -136,7 +140,7 @@ export default {
           dateOfBirth: this.user.date_of_birth,
         };
       } catch (error) {
-        alert('Could not load customer information.');
+        showError('Could not load customer information.');
         this.$router.push('/login');
       }
     },
@@ -177,11 +181,11 @@ export default {
       this.user = updatedUser;
       localStorage.setItem('user', JSON.stringify(updatedUser));
       this.isEditing = false;
-      alert('Profile updated successfully!');
+      showSuccess('Profile updated successfully!');
     },
     updateBranch() {
         localStorage.setItem('branch_id', this.selectedBranch);
-        alert('Branch updated!');
+        showInfo('Branch updated!');
     }
   },
   created() {

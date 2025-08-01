@@ -71,6 +71,7 @@ import { BadgeCheck, Clock, XCircle } from 'lucide-vue-next';
 import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import api from '@/api';
+import { showSuccess, showError, showInfo } from '@/utils/toast';
 
 export default {
   name: 'HistoryPage',
@@ -124,8 +125,9 @@ export default {
     async fetchOrders() {
       try {
         const userData = localStorage.getItem('user');
-        if (!userData) {
-          alert('Please log in to view your orders.');
+        const token = localStorage.getItem('accessToken');
+          if (!token){
+          showError('Please log in to view your orders.');
           this.$router.push('/login');
           return;
         }
@@ -159,7 +161,7 @@ export default {
         }, []);
         this.orders = grouped;
       } catch (error) {
-        alert('Failed to load order history.');
+        showError('Failed to load order history.');
       } finally {
         this.loading = false;
       }
@@ -172,7 +174,7 @@ export default {
           order.status = 'Cancelled';
         }
       } catch (error) {
-        alert('Failed to cancel order.');
+        showError('Failed to cancel order.');
       }
     },
   },

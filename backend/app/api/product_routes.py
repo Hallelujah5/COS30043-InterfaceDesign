@@ -2,15 +2,24 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.services.product_service import ProductService
+from app.services.product_like_service import ProductLikeService
 from app.utils.db import get_db
-from app.schemas.product import Product as ProductSchema, ProductBase 
+from app.schemas.product import Product as ProductSchema, ProductBase, LikedProduct
 from typing import List, Dict, Any, Optional
+from app.schemas.product import LikedProduct 
+from app.schemas.customer import Customer
+from app.utils.auth import get_current_active_customer
+
+
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
 # Dependency to get ProductService instance
 def get_product_service() -> ProductService:
     return ProductService()
+
+def get_product_like_service() -> ProductLikeService:
+    return ProductLikeService()
 
 @router.post("/", response_model=dict, status_code=status.HTTP_201_CREATED) # Changed to dict for message and ID
 async def create_product(
@@ -137,3 +146,61 @@ async def get_product_details(
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal server error: {e}")
 
+
+
+# --- NEW LIKE-RELATED ENDPOINTS ---
+
+@router.post("/{product_id}/like", status_code=status.HTTP_204_NO_CONTENT)
+async def like_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    like_service: ProductLikeService = Depends(get_product_like_service),
+    current_customer: Customer = Depends(get_current_active_customer) # Authentication
+):
+    """
+    Allows the currently authenticated customer to 'like' a product.
+    """
+    try:
+        like_service.like_product(db, customer_id=current_customer.customer_id, product_id=product_id)
+        # No content is returned on success, just a 204 status code.
+    except ValueError as e:
+        # Handles cases like "product not found" or "already liked"
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred.")
+
+
+@router.delete("/{product_id}/like", status_code=status.HTTP_204_NO_CONTENT)
+async def unlike_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    like_service: ProductLikeService = Depends(get_product_like_service),
+    current_customer: Customer = Depends(get_current_active_customer) # Authentication
+):
+    """
+    Allows the currently authenticated customer to remove their 'like' from a product.
+    """
+    try:
+        like_service.unlike_product(db, customer_id=current_customer.customer_id, product_id=product_id)
+        # No content is returned on success, just a 204 status code.
+    except ValueError as e:
+        # Handles cases like "product not found" or "not liked yet"
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred.")
+
+
+@router.get("/me/likes", response_model=List[LikedProduct])
+async def get_my_liked_products(
+    db: Session = Depends(get_db),
+    current_customer: Customer = Depends(get_current_active_customer),
+    like_service: ProductLikeService = Depends(get_product_like_service)
+):
+    """
+    Retrieves a list of all products liked by the current authenticated customer.
+    """
+    try:
+        liked_products = like_service.get_likes_by_customer(db, current_customer.customer_id)
+        return liked_products
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An unexpected error occurred.")

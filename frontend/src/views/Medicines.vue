@@ -1,6 +1,5 @@
 <!-- FILE: src/pages/Medicines.vue -->
-<!-- -->
-<!-- This page displays all available medicines, with search, filter, and favorite functionality. -->
+<!-- This is the complete, updated Vue component file. -->
 
 <template>
   <div class="bg-light min-vh-100">
@@ -59,51 +58,54 @@
 
         <!-- Products Grid -->
         <div class="row g-4">
-          <div v-for="p in filteredProducts" :key="p.product_id" class="col-md-6 col-lg-4 d-flex">
-            <div class="card h-100 shadow-sm w-100">
-              <div class="card-header">
-                <div class="position-relative">
-                    <div class="text-center mb-3">
-                        <div
-                            class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center"
-                            :style="{ width: '150px', height: '150px' }"
-                        >
-                            <img
-                            :src="p.image_url || '/default-product.png'"
-                            :alt="p.name"
-                            style="width: 100%; height: 100%; object-fit: contain;"
-                            />
-                        </div>
-                    </div>
-                    <!-- My new Favorite button -->
-                    <button class="btn btn-light btn-sm position-absolute top-0 end-0 m-2" @click="toggleFavorite(p.product_id)">
-                        <Heart class="favorite-icon" :class="{ favorited: isFavorited(p.product_id) }" />
-                    </button>
+          <div v-for="p in filteredProducts" :key="p.product_id" class="col-sm-6 col-lg-4 d-flex">
+            <div class="card h-100 shadow-sm border-0 rounded-3 w-100">
+              <!-- Image Section -->
+              <div class="position-relative text-center p-3">
+                <div class="bg-white shadow-sm d-inline-flex align-items-center justify-content-center overflow-hidden"
+                     :style="{ width: '150px', height: '150px' }">
+                  <img
+                    :src="p.image_url || '/default-product.png'"
+                    :alt="p.name"
+                    class="img-fluid"
+                    style="max-width: 100%; max-height: 100%; object-fit: contain;"
+                  />
                 </div>
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                  <span
-                    class="badge"
-                    :class="{ 'bg-danger': p.is_prescription_required, 'bg-secondary': !p.is_prescription_required }"
-                  >
-                    {{ p.is_prescription_required ? "Prescription" : "OTC" }}
-                  </span>
-                </div>
-                <h5 class="card-title">{{ p.name }}</h5>
-                <p class="text-muted mb-1">{{ p.category }}</p>
-                <p class="text-muted small">{{ p.description }}</p>
-              </div>
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-2">
-                  <strong class="text-primary">₫{{ p.price.toFixed(2) }}</strong>
+                
+                <!-- MODIFIED: Favorite Button and Count -->
+                <div class="position-absolute top-0 end-0 m-2 d-flex align-items-center bg-light bg-opacity-75 rounded-pill px-2 py-1 shadow-sm">
+                  <span class="text-muted small fw-bold me-1">{{ p.like_count }}</span>
+                  <button
+                    class="btn btn-sm p-0 border-0 bg-transparent"
+                    @click="toggleFavorite(p)"> <!-- Pass the whole product object -->
+                    <Heart class="favorite-icon" :class="{ favorited: isFavorited(p.product_id) }" />
+                  </button>
                 </div>
               </div>
-              <div class="card-footer d-flex justify-content-between">
-                 <button class="btn btn-outline-primary flex-grow-1 me-2" @click="viewDetails(p.product_id)">
-                    View details
+
+              <!-- Card Body -->
+              <div class="card-body px-3">
+                <span
+                  class="badge mb-2 px-3 py-1"
+                  :class="{ 'bg-danger': p.is_prescription_required, 'bg-secondary': !p.is_prescription_required }"
+                >
+                  {{ p.is_prescription_required ? "Prescription" : "OTC" }}
+                </span>
+                <h5 class="card-title fw-semibold text-truncate" :title="p.name">{{ p.name }}</h5>
+                <p class="text-muted small mb-1">{{ p.category }}</p>
+                <p class="text-muted small text-truncate-2" :title="p.description">{{ p.description }}</p>
+                <div class="mt-2">
+                  <strong class="text-primary fs-5">₫{{ p.price.toFixed(2) }}</strong>
+                </div>
+              </div>
+
+              <!-- Card Footer -->
+              <div class="card-footer bg-white border-0 d-flex flex-row gap-2 px-3 pb-3">
+                <button class="btn btn-outline-primary w-50" @click="viewDetails(p.product_id)">
+                  View Details
                 </button>
-                <button class="btn btn-primary flex-grow-1" @click="handleAddToCart(p)">
-                  <ShoppingCart class="me-2" :size="16" />
-                  Add to Cart
+                <button class="btn btn-primary w-50" @click="handleAddToCart(p)">
+                  <ShoppingCart class="me-2" :size="16" /> Add to Cart
                 </button>
               </div>
             </div>
@@ -140,7 +142,7 @@ export default {
       searchTerm: "",
       selectedCategory: "all",
       products: [],
-      favorites: [], // To store the IDs of favorited medicines
+      favorites: [], // Stores the IDs of favorited medicines
     };
   },
   computed: {
@@ -155,7 +157,7 @@ export default {
       return this.products.filter(p => {
         const matchesSearch =
           p.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-          p.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+          (p.description && p.description.toLowerCase().includes(this.searchTerm.toLowerCase()));
         const matchesCategory =
           this.selectedCategory === "all" || p.category === this.selectedCategory;
         return matchesSearch && matchesCategory;
@@ -164,41 +166,55 @@ export default {
   },
   methods: {
     isFavorited(productId) {
-        // Check if the product ID is in my favorites array
-        return this.favorites.includes(productId);
+      return this.favorites.includes(productId);    //bool
     },
-    async toggleFavorite(productId) {
-        const user = localStorage.getItem("user");
-        if (!user) {
-            showError("You must be logged in to favorite items.");
-            return;
-        }
+    async toggleFavorite(product) {
+      const user = localStorage.getItem("user");
+      if (!user) {
+        showError("You must be logged in to like items.");
+        this.$router.push('/login');
+        return;
+      }
 
-        const isCurrentlyFavorited = this.isFavorited(productId);
-        
-        // Optimistically update the UI for a faster user experience
+      const isCurrentlyFavorited = this.isFavorited(product.product_id);
+      
+      // update the UI for both like status and count
+      if (isCurrentlyFavorited) {
+        this.favorites = this.favorites.filter(id => id !== product.product_id);
+        product.like_count--; // Decrement like count
+      } else {
+        this.favorites.push(product.product_id);
+        product.like_count++; // Increment like count
+      }
+  
+      try {
         if (isCurrentlyFavorited) {
-            this.favorites = this.favorites.filter(id => id !== productId);
+          await api.delete(`/products/${product.product_id}/like`);
+          showSuccess("Removed from favorites!");
         } else {
-            this.favorites.push(productId);
+          await api.post(`/products/${product.product_id}/like`);
+          showSuccess("Added to favorites!");
         }
-
-        try {
-            // This is where I'd make the real API call to my backend
-            // The endpoint would handle adding/removing the favorite for the logged-in user
-            await api.post(`/products/${productId}/favorite`);
-        } catch (err) {
-            showError("Failed to update favorite status.");
-            // If the API call fails, revert the change in the UI
-            if (isCurrentlyFavorited) {
-                this.favorites.push(productId);
-            } else {
-                this.favorites = this.favorites.filter(id => id !== productId);
-            }
+      } catch (err) {
+        const msg = err.response?.data?.detail || "Failed to update favorite status.";
+        showError(msg);
+        // Revert the UI change if the API call fails
+        if (isCurrentlyFavorited) {
+          this.favorites.push(product.product_id);
+          product.like_count++; // Revert increment
+        } else {
+          this.favorites = this.favorites.filter(id => id !== product.product_id);
+          product.like_count--; // Revert decrement
         }
+      }
     },
     handleAddToCart(product) {
       const user = localStorage.getItem("user");
+      if (!user) {
+        showError("Please login before purchasing any medicines.");
+        this.$router.push(`/login`);
+        return;
+      }
       const userParse = user ? JSON.parse(user) : null;
       const hasPrescription = userParse?.has_prescription;
 
@@ -220,27 +236,30 @@ export default {
         this.products = res.data;
       } catch (err) {
         showError("Failed to load products");
-      } finally {
-        this.loading = false;
       }
     },
     async fetchFavorites() {
-        const user = localStorage.getItem("user");
-        if (!user) return; // Don't fetch if no user is logged in
-        
-        try {
-            // My API call to get the list of favorited product IDs for the current user
-            const res = await api.get('/favorites');
-            this.favorites = res.data.map(fav => fav.product_id); // Assuming the API returns an array of objects
-        } catch (err) {
-            console.error("Could not fetch favorites.");
-            // No need to show an error, the user just won't see their favorites
-        }
+      const token = localStorage.getItem("accessToken");
+      if (!token) return; // Don't fetch if no user is logged in
+      
+      try {
+        // Corrected API call to the new endpoint
+        const res = await api.get('/products/me/likes');
+        this.favorites = res.data.map(fav => fav.product_id);
+      } catch (err) {
+        // Fail silently. If the token is expired, the user just won't see their favorites.
+        console.error("Could not fetch favorites:", err);
+      }
     }
   },
-  mounted() {
-    this.fetchProducts();
-    this.fetchFavorites();
+  async mounted() {
+    // Fetch products and favorites at the same time for a faster load.
+    this.loading = true;
+    await Promise.all([
+      this.fetchProducts(),
+      this.fetchFavorites()
+    ]);
+    this.loading = false;
   },
 };
 </script>

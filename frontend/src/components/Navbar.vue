@@ -49,9 +49,6 @@
           <li v-if="!isCustomer && staffType === 'Cashier'" class="nav-item">
             <router-link to="/cashier-checkout" class="nav-link">Checkout</router-link>
           </li>
-          <li v-if="!isCustomer && staffType === 'BranchManager'" class="nav-item">
-            <router-link to="/manager-dashboard" class="nav-link">Dashboard</router-link>
-          </li>
            <li v-if="!isCustomer && staffType === 'BranchManager'" class="nav-item">
             <router-link to="/task-delegation" class="nav-link">Task delegation</router-link>
           </li>
@@ -60,20 +57,7 @@
           </li>
         </ul>
 
-        <!-- Search Bar -->
-        <form class="d-flex me-md-4 mb-3 mb-md-0" role="search">
-          <div class="input-group">
-            <span class="input-group-text bg-light">
-              <Search class="text-muted" />
-            </span>
-            <input
-              class="form-control"
-              type="search"
-              placeholder="Search medicines..."
-              aria-label="Search"
-            />
-          </div>
-        </form>
+      
 
         <!-- Right Side Icons -->
         <div class="d-flex align-items-center gap-3">
@@ -92,7 +76,7 @@
             <router-link to="/profile">
               <button class="btn btn-outline-secondary">
                 <User class="me-1" />
-                {{ user?.lastname }}
+                {{ user?.last_name }}
               </button>
             </router-link>
             <button class="btn btn-danger" @click="logout">
@@ -116,8 +100,8 @@
 <script>
 // Import necessary libraries and components
 import { RouterLink } from 'vue-router';
-import { useCartStore } from '@/stores/cart'; // Pinia store for cart state
-import { ShoppingCart, User, LogIn, Search } from 'lucide-vue-next'; // Vue icons
+import { useCartStore } from '@/stores/cart';
+import { ShoppingCart, User, LogIn, Search } from 'lucide-vue-next'; 
 
 export default {
   name: 'Navbar',
@@ -129,7 +113,7 @@ export default {
     Search,
   },
   data() {
-    // 'data' holds the component's reactive state, replacing useState
+    
     return {
       isMenuOpen: false,
       user: null,
@@ -142,7 +126,7 @@ export default {
       return useCartStore().cartItemCount;
     },
     isLoggedIn() {
-      return !!this.user;
+      return !!this.user;   // !! is boolean
     },
     isCustomer() {
       return this.user?.role === 'Customer';
@@ -157,8 +141,9 @@ export default {
       this.isMenuOpen = !this.isMenuOpen;
     },
     logout() {
+      localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
-      // Force a page reload to reset state across the app
+      // Redirect to login page
       window.location.href = '/';
     },
   },
@@ -166,16 +151,17 @@ export default {
     // 'mounted' is a lifecycle hook that runs once the component is added to the DOM.
     // This is the equivalent of React's useEffect with an empty dependency array.
     const storedUser = localStorage.getItem('user');
+    // const storedUser = localStorage.getItem('accessToken');
     if (storedUser) {
       this.user = JSON.parse(storedUser);
+      console.log("JSON parsed user: ", this.user);
     }
   },
 };
 </script>
 
 <style scoped>
-/* Scoped styles ensure that CSS rules in this file only apply to this component */
 .gap-3 {
-  gap: 1rem; /* Bootstrap 5 gap utility */
+  gap: 1rem; 
 }
 </style>

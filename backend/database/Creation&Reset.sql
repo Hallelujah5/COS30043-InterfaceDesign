@@ -184,6 +184,18 @@ CREATE TABLE pharmacy_db.`Notifications` (
     FOREIGN KEY (`branch_id`) REFERENCES `Branches`(`branch_id`) ON DELETE SET NULL
 );
 
+-- Bảng: ProductLikes
+-- Lưu trữ lượt "thích" của khách hàng đối với sản phẩm.
+CREATE TABLE pharmacy_db.`ProductLikes` (
+    `customer_id` INT NOT NULL,
+    `product_id` INT NOT NULL,
+    `liked_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`customer_id`, `product_id`), -- Khóa chính tổng hợp ngăn chặn một khách hàng thích sản phẩm nhiều lần
+    FOREIGN KEY (`customer_id`) REFERENCES `Customers`(`customer_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`product_id`) REFERENCES `Products`(`product_id`) ON DELETE CASCADE
+);
+
+
 -- TRIGGERS
 
 -- Trigger: trg_after_order_item_insert
@@ -208,7 +220,7 @@ AFTER UPDATE ON `OrderItems`
 FOR EACH ROW
 BEGIN
     -- Chỉ điều chỉnh nếu số lượng thay đổi
-    IF OLD.quantity <> NEW.quantity THEN
+    IF OLD.quantity <> NEW.quantity THEN    
         UPDATE `ProductStock`
         SET `stock_quantity` = `stock_quantity` + OLD.quantity - NEW.quantity
         WHERE `branch_id` = (SELECT `branch_id` FROM `Orders` WHERE `order_id` = NEW.order_id)

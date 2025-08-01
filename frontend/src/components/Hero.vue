@@ -1,7 +1,3 @@
-<!-- FILE: src/components/Hero.vue -->
-<!-- -->
-<!-- The main hero section for the home page. -->
-
 <template>
   <div class="bg-light py-5 custom-gradient">
     <div class="container">

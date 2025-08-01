@@ -20,8 +20,8 @@ class AuthService:
         if not customer:
             return None # Customer not found
 
-        # if not pwd_context.verify(password, customer.password_hash):
-        #     return None # Incorrect password
+        if not pwd_context.verify(password, customer.password_hash):
+            return None # Incorrect password
 
         # Customer authenticated successfully
         return {

@@ -150,6 +150,8 @@ export default {
   },
   methods: {
     handleAddToCart(medicine) {
+      const user = localStorage.getItem("user");
+    if (!user) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
       if (!medicine.inStock) return;
       const hasPrescription = localStorage.getItem("has_prescription") === "true";
       if (medicine.prescription && !hasPrescription) {

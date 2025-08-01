@@ -70,7 +70,7 @@
             </div>
             <div class="mb-3">
               <label for="loginEmail" class="form-label">Email</label>
-              <input
+              <input v-focus 
                 id="loginEmail"
                 type="email"
                 class="form-control"
@@ -104,11 +104,11 @@
           <h5 class="card-title mb-3 d-flex align-items-center">
             <User class="me-2" /> Create Account
           </h5>
-          <form @submit.prevent="handleRegister" noValidate>
+          <form @submit.prevent="handleRegister">
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="registerFName" class="form-label">First Name</label>
-                    <input id="registerFName" type="text" class="form-control" placeholder="First Name" v-model="registerData.fname" required />
+                    <input v-focus id="registerFName" type="text" class="form-control" placeholder="First Name" v-model="registerData.fname" required />
                 </div>
                 <div class="col-md-6 mb-3">
                     <label for="registerLName" class="form-label">Last Name</label>
@@ -188,20 +188,14 @@ export default {
 
       try {
         const res = await api.post(endpoint, { email, password });
-        const user = {
-          id: res.data.user_id,
-          has_prescription: res.data.has_prescription,
-          lastname: res.data.last_name,
-          email: res.data.email,
-          role: res.data.role,
-        };
 
-        // if (user.role !== 'Customer' && user.role !== null) {
-        //   user.has_prescription = true;
-        //   user.id = res.data.user_id;
-        // }
+        // 1. Destructure the token and user info from the response data.
+        const { access_token, token_type, ...userInfo } = res.data;
 
-        localStorage.setItem('user', JSON.stringify(user));
+        // 2. Store the token and user data separately in localStorage.
+        localStorage.setItem('accessToken', access_token);
+        localStorage.setItem('user', JSON.stringify(userInfo));
+        
         showSuccess('Login successful!');
         this.$router.push('/');
       } catch (err) {

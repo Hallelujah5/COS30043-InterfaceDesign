@@ -129,13 +129,14 @@ export default {
         return;
       }
       const storedUser = localStorage.getItem('user');
-      if (!storedUser) {
+      const token = localStorage.getItem('accessToken');
+        if (!token) {
         showError('You must be logged in to upload a prescription.');
         this.$router.push('/login');
         return;
       }
       
-      const customerId = JSON.parse(storedUser).id;
+      const customerId = JSON.parse(storedUser).user_id;
       const formData = new FormData();
       formData.append('customer_id', customerId);
       formData.append('notes', this.notes);
@@ -157,7 +158,7 @@ export default {
   },
   created() {
     // This hook checks if the user is logged in when the component is created.
-    if (!localStorage.getItem('user')) {
+    if (!localStorage.getItem('accessToken')) {
       showError('Please log in to access this page.');
       this.$router.push('/login');
     }

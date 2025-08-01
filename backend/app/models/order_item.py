@@ -1,4 +1,4 @@
-# app/models/order_item.py
+
 from sqlalchemy import Column, Integer, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import Base # Corrected relative import

@@ -10,6 +10,14 @@ const pinia = createPinia();
 const app = createApp(App);
 
 
+
+// Register a global custom directive `v-focus`
+app.directive('focus', {
+  // FOCus when bound element is mounted into the DOM
+  mounted(el) {
+    el.focus();
+  }
+});
 const options = {
     position: "bottom-right",
     timeout: 4000,

@@ -28,7 +28,7 @@ app = FastAPI(title="Pharmacy Management API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # hoặc ["*"] tạm thời cho dev
+    allow_origins=["http://localhost:5173"],  # ["*"] tạm thời cho dev
     allow_credentials=True,
     allow_methods=["*"],  # GET, POST, PUT, DELETE, etc
     allow_headers=["*"],

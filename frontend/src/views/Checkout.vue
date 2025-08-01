@@ -126,10 +126,11 @@
 </template>
 
 <script>
-import { ArrowLeft, Minus, Plus, Trash2, CreditCard, MapPin, User, Package } from 'lucide-vue-next';
+import { ArrowLeft, Minus, Plus, Trash2, CreditCard, MapPin, User, Package, ShowerHead } from 'lucide-vue-next';
 import Navbar from '@/components/Navbar.vue';
 import { useCartStore } from '@/stores/cart';
 import api from '@/api';
+import { showSuccess, showError, showInfo } from '@/utils/toast';
 
 export default {
   name: 'CheckoutPage',
@@ -174,7 +175,7 @@ export default {
     },
     async handlePlaceOrder() {
       if (this.cartStore.items.length === 0) {
-        alert('Your cart is empty.');
+        showError('Your cart is empty.');
         return;
       }
 
@@ -182,7 +183,7 @@ export default {
       const branchId = localStorage.getItem('branch_id');
 
       const payload = {
-        customer_id: user?.id || 1,
+        customer_id: user?.user_id || 1,
         branch_id: parseInt(branchId),
         product_details: this.cartStore.items.map(item => ({
           product_id: item.product_id,
@@ -193,14 +194,18 @@ export default {
 
       try {
         await api.post('/orders/place', payload);
-        alert('Order placed successfully!');
+        showSuccess('Order placed successfully!');
         this.cartStore.clearCart();
         this.$router.push('/');
       } catch (err) {
         const msg = err.response?.data?.detail || 'Failed to place order.';
-        alert(msg);
+        showError(msg);
       }
     },
   },
+  created(){
+      const user = localStorage.getItem("user");
+      if (!user) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
+  }
 };
 </script>

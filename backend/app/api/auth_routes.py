@@ -4,6 +4,8 @@ from app.services.auth_service import AuthService
 from app.utils.db import get_db
 from app.schemas.auth import LoginRequest, LoginResponse
 from typing import Dict, Any
+from app.utils.auth import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES
+from datetime import timedelta
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -26,6 +28,14 @@ async def customer_login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid customer credentials or account inactive."
         )
+    # Create the JWT
+    expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    token = create_access_token(data={"sub": auth_result["email"]}, expires_delta=expires)
+    
+    # Add the token to the response
+    auth_result["access_token"] = token
+    auth_result["token_type"] = "bearer"
+    
     return LoginResponse(**auth_result)
 
 @router.post("/staff/login", response_model=LoginResponse)
@@ -43,4 +53,11 @@ async def staff_login(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid staff credentials or account inactive."
         )
+    # Create the JWT
+    expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    token = create_access_token(data={"sub": auth_result["email"]}, expires_delta=expires)
+
+    # Add the token to the response
+    auth_result["access_token"] = token
+    auth_result["token_type"] = "bearer"
     return LoginResponse(**auth_result)

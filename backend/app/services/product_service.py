@@ -1,39 +1,85 @@
-# app/services/product_service.py
 from sqlalchemy.orm import Session
+from typing import List, Optional
+
+# Import repositories for both products and likes
 from app.repositories.product_repository import ProductRepository
-from app.models.product import Product # Your SQLAlchemy ORM model
-from typing import List, Dict, Any, Optional
+from app.repositories.product_like_repository import ProductLikeRepository
+
+# Import the Pydantic schema to structure the API response
+from app.schemas.product import Product as ProductSchema
+from app.models.product import Product as ProductModel # The SQLAlchemy model
+
 
 class ProductService:
     def __init__(self):
         self.product_repo = ProductRepository()
+        # Add the like repository as a dependency
+        self.like_repo = ProductLikeRepository()
 
-    def get_all_products(self, db: Session) -> List[Product]:
+    def get_all_products(self, db: Session) -> List[ProductSchema]:
         """
-        Gets all products.
+        Gets all products and enriches them with their respective like counts.
         """
-        return self.product_repo.get_all_products(db)
+        products_from_db = self.product_repo.get_all_products(db)
+        
+        products_with_likes = []
+        for product_model in products_from_db:
+            # For each product, get its like count from the like repository
+            like_count = self.like_repo.get_like_count_for_product(db, product_model.product_id)
+            
+            # Convert the SQLAlchemy model to a Pydantic schema object
+            product_schema = ProductSchema.from_orm(product_model)
+            
+            # Assign the fetched like count to the new field in the schema
+            product_schema.like_count = like_count
+            products_with_likes.append(product_schema)
+            
+        return products_with_likes
 
-    def get_product_details(self, db: Session, product_id: int) -> Product:
+    def get_product_details(self, db: Session, product_id: int) -> ProductSchema:
         """
-        Gets details for a specific product.
+        Gets details for a specific product, including its like count.
         """
         product = self.product_repo.get_product_by_id(db, product_id)
         if not product:
             raise ValueError(f"Product with ID {product_id} not found.")
-        return product
 
-    def search_products(self, db: Session, query: str | None = None, category: str | None = None) -> List[Product]:
-        """
-        Searches products by name or category.
-        """
-        return self.product_repo.search_products(db, query, category)
+        # Similar to get_all_products, we enrich the single product
+        like_count = self.like_repo.get_like_count_for_product(db, product.product_id)
+        product_schema = ProductSchema.from_orm(product)
+        product_schema.like_count = like_count
+        
+        return product_schema
 
-    def get_prescription_required_products(self, db: Session) -> List[Product]:
+    def search_products(self, db: Session, query: str | None = None, category: str | None = None) -> List[ProductSchema]:
         """
-        Gets products that require a prescription.
+        Searches products and enriches the results with like counts.
         """
-        return self.product_repo.get_prescription_required_products(db)
+        products_from_db = self.product_repo.search_products(db, query, category)
+        # Apply the same enrichment logic as get_all_products
+        products_with_likes = []
+        for product_model in products_from_db:
+            like_count = self.like_repo.get_like_count_for_product(db, product_model.product_id)
+            product_schema = ProductSchema.from_orm(product_model)
+            product_schema.like_count = like_count
+            products_with_likes.append(product_schema)
+            
+        return products_with_likes
+
+    def get_prescription_required_products(self, db: Session) -> List[ProductSchema]:
+        """
+        Gets prescription-required products and enriches them with like counts.
+        """
+        products_from_db = self.product_repo.get_prescription_required_products(db)
+        # Apply the same enrichment logic
+        products_with_likes = []
+        for product_model in products_from_db:
+            like_count = self.like_repo.get_like_count_for_product(db, product_model.product_id)
+            product_schema = ProductSchema.from_orm(product_model)
+            product_schema.like_count = like_count
+            products_with_likes.append(product_schema)
+            
+        return products_with_likes
     
     def import_new_product(
         self,
@@ -43,7 +89,7 @@ class ProductService:
         price: float,
         category: Optional[str],
         is_prescription_required: bool,
-        image_url: Optional[str] = None # Added image_url parameter
+        image_url: Optional[str] = None
     ) -> int:
         """
         Imports a new product into the system.
@@ -65,12 +111,11 @@ class ProductService:
         price: float,
         category: Optional[str],
         is_prescription_required: bool,
-        image_url: Optional[str] = None # Added image_url parameter
+        image_url: Optional[str] = None
     ) -> bool:
         """
         Updates an existing product's information.
         """
-        # Optional: Add a check if product_id exists before attempting to update
         existing_product = self.product_repo.get_product_by_id(db, product_id)
         if not existing_product:
             raise ValueError(f"Product with ID {product_id} not found for update.")

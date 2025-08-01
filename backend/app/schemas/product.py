@@ -13,6 +13,10 @@ class ProductBase(BaseModel):
 
 class Product(ProductBase):
     product_id: int
+    like_count: int = 0
 
     class Config:
         from_attributes = True 
+
+class LikedProduct(BaseModel):
+    product_id: int

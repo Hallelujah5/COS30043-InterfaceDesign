@@ -39,7 +39,7 @@
               </div>
               <p class="mb-3 fw-medium">Total: ₫{{ (medicine.price * quantity).toFixed(2) }}</p>
               <div class="d-flex gap-3">
-                <button class="btn btn-outline-primary flex-fill" :disabled="!stockCount" @click="handleAddToCart">
+                <button class="btn btn-outline-primary flex-fill" :disabled="!stockCount" @click="handleAddToCart()">
                   <ShoppingCart :size="16" class="me-2" /> Add to Cart
                 </button>
                 <button class="btn btn-primary flex-fill" :disabled="!stockCount" @click="handleBuyNow">
@@ -73,6 +73,7 @@ import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import { useCartStore } from '@/stores/cart';
 import api from '@/api';
+import { showSuccess, showError, showInfo } from '@/utils/toast';
 
 export default {
   name: 'MedicineDetailPage',
@@ -92,8 +93,10 @@ export default {
       try {
         const res = await api.get(`/products/${this.$route.params.id}`);
         this.medicine = res.data;
+        console.log("Medicine in question: ",this.medicine);
+
       } catch (error) {
-        alert('Failed to fetch product.');
+        showError('Failed to fetch product.');
       }
     },
     async fetchBranchStock() {
@@ -105,23 +108,28 @@ export default {
         this.stockCount = medStock ? medStock.stock_quantity : 0;
       } catch (error) {
         this.stockCount = 0;
-        alert('Error in fetching stock count.');
+        showError('Error in fetching stock count.');
       }
     },
     handleAddToCart() {
+        const user = localStorage.getItem("user");
+      if (!user) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
+      console.log("handleAddToCart triggered.")
       const hasPrescription = localStorage.getItem('has_prescription') === 'true';
       if (this.medicine.is_prescription_required && !hasPrescription) {
-        alert('You need an approved prescription to buy this medicine.');
+        showError('You need an approved prescription to buy this medicine.');
         return;
       }
       const cartStore = useCartStore();
       const productWithQty = { ...this.medicine, quantity: this.quantity };
       cartStore.addToCart(productWithQty);
-      alert(`${this.quantity} ${this.medicine.name} added to your cart`);
+      showSuccess(`${this.quantity} ${this.medicine.name} added to your cart`);
     },
     handleBuyNow() {
+      const user = localStorage.getItem("user");
+      if (!user) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
       this.handleAddToCart();
-      alert('Taking you to secure checkout...');
+      showInfo('Taking you to secure checkout...');
       this.$router.push('/checkout');
     },
   },

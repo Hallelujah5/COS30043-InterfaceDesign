@@ -1,7 +1,3 @@
-<!-- FILE: src/components/Categories.vue -->
-<!-- -->
-<!-- This component displays a grid of product categories on the home page. -->
-
 <template>
   <section class="py-5 bg-light">
     <div class="container">
@@ -11,9 +7,9 @@
       </div>
 
       <div class="row g-4">
-        <!-- Loop through the categories array using v-for -->
+
         <div v-for="(category, index) in categories" :key="index" class="col-6 col-md-4 col-lg-2">
-          <!-- Bind the dynamic color class using :class -->
+
           <div class="card text-center border-0 p-3" :class="category.color">
             <div class="card-body">
               <div class="fs-2 mb-2">{{ category.icon }}</div>
