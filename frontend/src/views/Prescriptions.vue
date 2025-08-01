@@ -1,6 +1,3 @@
-<!-- FILE: src/pages/Prescriptions.vue -->
-<!-- -->
-<!-- My page for uploading medical prescriptions. -->
 
 <template>
   <div class="min-vh-100 bg-light">

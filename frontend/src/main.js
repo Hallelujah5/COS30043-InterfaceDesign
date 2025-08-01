@@ -13,7 +13,7 @@ const app = createApp(App);
 
 // Register a global custom directive `v-focus`
 app.directive('focus', {
-  // FOCus when bound element is mounted into the DOM
+  // FOCus ưhen bound element is mounted into the DOM
   mounted(el) {
     el.focus();
   }

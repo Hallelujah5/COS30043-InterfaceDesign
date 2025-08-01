@@ -1,3 +1,5 @@
+// This file defines my Pinia store for managing the shopping cart state across my Vue app.
+
 import { defineStore } from 'pinia';
 
 export const useCartStore = defineStore('cart', {

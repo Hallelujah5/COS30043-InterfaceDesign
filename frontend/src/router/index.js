@@ -1,9 +1,5 @@
-
 import { createRouter, createWebHistory } from 'vue-router';
 
-// We import the page components.
-// Note: These files would need to be created/translated from your React views.
-// For now, these are placeholders.
 import Index from '../views/Index.vue';
 import Login from '../views/Login.vue';
 import Medicines from '../views/Medicines.vue';
@@ -12,13 +8,10 @@ import History from '../views/History.vue';
 import Checkout from '../views/Checkout.vue';
 import Profile from '../views/Profile.vue';
 import MedicineDetail from '../views/MedDetail.vue';
-// import CashierCheckout from '../views/Cashier-checkout.vue';
-// import ManagerDashboard from '../views/Manager-Dashboard.vue';
-// import Restock from '../views/Restock.vue';
-// import ValidatePrescription from '../views/ValidatePrescription.vue';
-// import WarehouseRestock from '../views/Warehouse-restock.vue';
+import CashierCheckout from '../views/Cashier-checkout.vue';
+import ValidatePrescription from '../views/ValidatePrescription.vue';
 import Payments from '../views/Payment.vue';
-// import TaskDelegation from '../views/Task-delegation.vue';
+import TaskDelegation from '../views/Task-delegation.vue';
 import NotFound from '../views/NotFound.vue';
 
 
@@ -41,7 +34,7 @@ const router = createRouter({
       component: Medicines,
     },
     {
-        path: '/medicine/:id', // Dynamic route for medicine details
+        path: '/medicine/:id', 
         name: 'medicine-detail',
         component: MedicineDetail,
     },
@@ -65,41 +58,28 @@ const router = createRouter({
         name: 'profile',
         component: Profile,
     },
-    // {
-    //     path: '/cashier-checkout',
-    //     name: 'cashier-checkout',
-    //     component: CashierCheckout,
-    // },
-    // {
-    //     path: '/manager-dashboard',
-    //     name: 'manager-dashboard',
-    //     component: ManagerDashboard,
-    // },
-    // {
-    //     path: '/restock',
-    //     name: 'restock',
-    //     component: Restock,
-    // },
-    // {
-    //     path: '/validate-prescription',
-    //     name: 'validate-prescription',
-    //     component: ValidatePrescription,
-    // },
-    // {
-    //     path: '/warehouse-staff-restock',
-    //     name: 'warehouse-staff-restock',
-    //     component: WarehouseRestock,
-    // },
+    {
+        path: '/cashier-checkout',
+        name: 'cashier-checkout',
+        component: CashierCheckout,
+    },
+
+    {
+        path: '/validate-prescription',
+        name: 'validate-prescription',
+        component: ValidatePrescription,
+    },
+
     {
         path: '/payment',
         name: 'payment',
         component: Payments,
     },
-    // {
-    //     path: '/task-delegation',
-    //     name: 'task-delegation',
-    //     component: TaskDelegation,
-    // },
+    {
+        path: '/task-delegation',
+        name: 'task-delegation',
+        component: TaskDelegation,
+    },
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',

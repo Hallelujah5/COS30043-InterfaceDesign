@@ -150,7 +150,7 @@ export default {
       return this.cartStore.cartTotal;
     },
     shipping() {
-      return this.subtotal > 50000 ? 0 : 15000; // Example: 50k VND for free shipping
+      return this.subtotal > 50000 ? 0 : 15000; 
     },
     total() {
       return this.subtotal + this.shipping;

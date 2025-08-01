@@ -84,7 +84,7 @@
                 <Package class="me-2 text-success" />
                 <div>
                   <small class="text-muted">Total Orders</small>
-                  <!-- Placeholder for total orders count -->
+                  
                 </div>
               </div>
             </div>
