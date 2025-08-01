@@ -1,12 +1,12 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
-
+import math
 # Import repositories for both products and likes
 from app.repositories.product_repository import ProductRepository
 from app.repositories.product_like_repository import ProductLikeRepository
 
 # Import the Pydantic schema to structure the API response
-from app.schemas.product import Product as ProductSchema
+from app.schemas.product import Product as ProductSchema, PaginatedProductResponse
 from app.models.product import Product as ProductModel # The SQLAlchemy model
 
 
@@ -126,3 +126,41 @@ class ProductService:
         if not success:
             raise Exception(f"Failed to update product with ID {product_id}.")
         return True
+
+
+    def get_all_products_paginated(self, db: Session, page: int, size: int) -> PaginatedProductResponse:
+        """
+        Gets all products with pagination and enriches them with like counts.
+        """
+        if page < 1:
+            page = 1
+        if size < 1:
+            size = 10
+        
+        # Calculate the number of items to skip
+        skip = (page - 1) * size
+        
+        # Fetch the total number of products
+        total_items = self.product_repo.get_total_product_count(db)
+        
+        # Fetch the paginated list of products
+        products_from_db = self.product_repo.get_paginated_products(db, skip=skip, limit=size)
+        
+        # Enrich the current page of products with like counts
+        products_with_likes = []
+        for product_model in products_from_db:
+            like_count = self.like_repo.get_like_count_for_product(db, product_model.product_id)
+            product_schema = ProductSchema.from_orm(product_model)
+            product_schema.like_count = like_count
+            products_with_likes.append(product_schema)
+            
+        # Calculate total pages
+        total_pages = math.ceil(total_items / size)
+        
+        # Assemble the final paginated response
+        return PaginatedProductResponse(
+            total_items=total_items,
+            total_pages=total_pages,
+            current_page=page,
+            items=products_with_likes
+        )

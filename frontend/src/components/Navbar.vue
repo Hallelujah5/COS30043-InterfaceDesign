@@ -52,7 +52,7 @@
            <li v-if="!isCustomer && staffType === 'BranchManager'" class="nav-item">
             <router-link to="/task-delegation" class="nav-link">Task delegation</router-link>
           </li>
-          <li v-if="!isCustomer && staffType === 'WarehouseStaff'" class="nav-item">
+          <li v-if="!isCustomer && staffType === 'BranchManager'" class="nav-item">
             <router-link to="/restock" class="nav-link">Restock</router-link>
           </li>
         </ul>

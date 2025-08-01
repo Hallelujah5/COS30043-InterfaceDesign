@@ -1,6 +1,6 @@
 # app/schemas/product.py
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 class ProductBase(BaseModel):
     name: str
@@ -20,3 +20,10 @@ class Product(ProductBase):
 
 class LikedProduct(BaseModel):
     product_id: int
+    
+    
+class PaginatedProductResponse(BaseModel):
+    total_items: int
+    total_pages: int
+    current_page: int
+    items: List[Product]

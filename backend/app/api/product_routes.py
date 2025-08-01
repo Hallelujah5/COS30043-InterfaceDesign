@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.services.product_service import ProductService
 from app.services.product_like_service import ProductLikeService
 from app.utils.db import get_db
-from app.schemas.product import Product as ProductSchema, ProductBase, LikedProduct
+from app.schemas.product import Product as ProductSchema, ProductBase, LikedProduct, PaginatedProductResponse
 from typing import List, Dict, Any, Optional
 from app.schemas.product import LikedProduct 
 from app.schemas.customer import Customer
@@ -85,19 +85,24 @@ async def update_product_info(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal server error: {e}")
 
 
-@router.get("/", response_model=List[ProductSchema])
-async def get_all_products(
+@router.get("/", response_model=PaginatedProductResponse)
+async def get_all_products_paginated(
+    page: int = 1, 
+    size: int = 9, # Default to 9 items to fit a 3x3 grid
     product_service: ProductService = Depends(get_product_service),
     db: Session = Depends(get_db)
 ):
     """
-    Retrieves a list of all available products.
+    Retrieves a paginated list of all available products.
     """
     try:
-        products = product_service.get_all_products(db)
-        return products
+        paginated_products = product_service.get_all_products_paginated(db, page=page, size=size)
+        return paginated_products
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal server error: {e}")
+        # It's good practice to log the error here
+        # import logging
+        # logging.exception("Error fetching paginated products")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An internal server error occurred.")
 
 @router.get("/prescription-required", response_model=List[ProductSchema])
 async def get_prescription_required_products(

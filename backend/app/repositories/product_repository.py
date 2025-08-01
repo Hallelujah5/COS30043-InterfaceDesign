@@ -1,5 +1,6 @@
 # app/repositories/product_repository.py
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from app.models.product import Product # Your SQLAlchemy ORM model
 from app.utils.db import get_db_connection
 from typing import List, Dict, Any, Optional
@@ -94,3 +95,23 @@ class ProductRepository:
             return False
         finally:
             connection.close()
+
+    def get_paginated_products(self, db: Session, skip: int = 0, limit: int = 10) -> List[Product]:
+        """
+        Retrieves a paginated list of products from the database.
+        'skip' is the number of items to bypass (offset).
+        'limit' is the maximum number of items to return.
+        """
+        return db.query(Product).offset(skip).limit(limit).all()
+
+    def get_total_product_count(self, db: Session) -> int:
+        """
+        Returns the total number of products in the database.
+        """
+        return db.query(func.count(Product.product_id)).scalar()
+
+    def get_product_by_id(self, db: Session, product_id: int) -> Optional[Product]:
+        """
+        Retrieves a single product by its primary key.
+        """
+        return db.query(Product).filter(Product.product_id == product_id).first()

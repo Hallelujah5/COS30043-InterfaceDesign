@@ -13,6 +13,7 @@ import ValidatePrescription from '../views/ValidatePrescription.vue';
 import Payments from '../views/Payment.vue';
 import TaskDelegation from '../views/Task-delegation.vue';
 import NotFound from '../views/NotFound.vue';
+import Restock from '@/views/Restock.vue';
 
 
 const router = createRouter({
@@ -80,6 +81,13 @@ const router = createRouter({
         name: 'task-delegation',
         component: TaskDelegation,
     },
+    {
+        path: '/restock',
+        name: 'restock',
+        component: Restock,
+    },
+
+
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
