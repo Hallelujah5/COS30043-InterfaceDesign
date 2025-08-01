@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://127.0.0.1:8000"
+    baseURL: "http://cos30043-interfacedesign-production-ff6f.up.railway.app"
 });
 
 // Use an interceptor to add the token to every request

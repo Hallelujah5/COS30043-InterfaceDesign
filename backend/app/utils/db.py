@@ -7,13 +7,12 @@ from dotenv import load_dotenv # Optional: for local .env file
 # Load environment variables from a .env file if it exists (for local development)
 load_dotenv()
 
-# --- Read Database Credentials from Environment Variables ---
-# Render will provide these values in the production environment.
-# The default values are now set to your new freesqldatabase.com credentials.
-DB_HOSTNAME = os.getenv("DATABASE_HOSTNAME", "sql12.freesqldatabase.com")
-DB_USERNAME = os.getenv("DATABASE_USERNAME", "sql12793112")
-DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "ZtudPX8Zmd")
-DB_NAME = os.getenv("DATABASE_NAME", "sql12793112")
+
+DB_HOSTNAME = os.getenv("DATABASE_HOSTNAME", "crossover.proxy.rlwy.net")
+DB_USERNAME = os.getenv("DATABASE_USERNAME", "root")
+DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "RyOGxHWouZsjMbHPpvGeqpJgNkvCZKQT")
+DB_NAME = os.getenv("DATABASE_NAME", "railway")
+DB_PORT = os.getenv("DATABASE_PORT", "43399") 
 
 # Construct the database URL
 SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}/{DB_NAME}"
