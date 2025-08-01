@@ -118,10 +118,10 @@ UPDATE `Customers` SET `gender` = 'Male', `dob` = '1990-01-01' WHERE `customer_i
 -- CALL `SP_ImportNewProduct`('Men tiêu hóa Enterogermina', 'Sanofi', 'Hỗ trợ tiêu hóa.', 110000.00, 'Thuốc tiêu hóa', FALSE, 'http://localhost:8000/static/enterogermina.jpg');
 
 
-CALL `SP_ImportNewProduct`('Paracetamol 500mg', 'Stada', 'Thuốc giảm đau, hạ sốt.', 15000.00, 'Thuốc giảm đau', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/paracetamol.jpg');
+CALL `SP_ImportNewProduct`('Paracetamol 500mg', 'Stada', 'Thuốc giảm đau, hạ sốt.', 15000.00, 'Thuốc giảm đau', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/Paracetamol.jpg');
 CALL `SP_ImportNewProduct`('Ibuprofen 400mg', 'Stellapharm', 'Thuốc chống viêm, giảm đau.', 22000.00, 'Thuốc giảm đau', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/ibuprofen.jpg');
 CALL `SP_ImportNewProduct`('Amoxicillin 250mg', 'Domesco', 'Kháng sinh phổ rộng.', 30000.00, 'Kháng sinh', TRUE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/amoxicillin.jpg');
-CALL `SP_ImportNewProduct`('Vitamin C 1000mg', 'Bayer', 'Bổ sung Vitamin C tăng cường sức đề kháng.', 80000.00, 'Vitamin', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/vitaminc.jpg');
+CALL `SP_ImportNewProduct`('Vitamin C 1000mg', 'Bayer', 'Bổ sung Vitamin C tăng cường sức đề kháng.', 80000.00, 'Vitamin', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/vitaminC.jpg');
 CALL `SP_ImportNewProduct`('Vitamin Tổng Hợp One A Day', 'Bayer', 'Hỗ trợ sức khỏe tổng thể.', 250000.00, 'Vitamin', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/multivi.jpg');
 CALL `SP_ImportNewProduct`('Vitamin D3 2000IU', 'Nature Made', 'Bổ sung Vitamin D3.', 450000.00, 'Vitamin', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/vitamind3.jpg');
 CALL `SP_ImportNewProduct`('Thuốc nhỏ mắt V.Rohto', 'Rohto-Mentholatum', 'Giúp làm dịu và giảm mỏi mắt.', 45000.00, 'Chăm sóc mắt', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/vrohto.jpg');

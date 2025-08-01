@@ -110,7 +110,7 @@ export default {
           rating: 4.5,
           inStock: true,
           prescription: false,
-          image_url: "https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/paracetamol.jpg",
+          image_url: "https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/Paracetamol.jpg",
         },
         {
           product_id: 2,
@@ -132,7 +132,7 @@ export default {
           rating: 4.6,
           inStock: true,
           prescription: false,
-          image_url: "https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/vitaminc.jpg",
+          image_url: "https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/vitaminC.jpg",
         },
         {
           product_id: 6,
