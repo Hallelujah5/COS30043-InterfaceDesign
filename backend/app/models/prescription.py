@@ -6,14 +6,13 @@ from .base import Base # Corrected relative import
 
 class Prescription(Base):
     __tablename__ = 'Prescriptions'
-    __table_args__ = {'schema': 'pharmacy_db'}
 
     prescription_id = Column(Integer, primary_key=True, autoincrement=True)
-    customer_id = Column(Integer, ForeignKey('pharmacy_db.Customers.customer_id', ondelete='CASCADE'), nullable=False)
+    customer_id = Column(Integer, ForeignKey('Customers.customer_id', ondelete='CASCADE'), nullable=False)
     upload_date = Column(DateTime, default=func.now())
     file_path = Column(String(255))
     validation_status = Column(Enum('Pending', 'Approved', 'Rejected'), default='Pending')
-    pharmacist_id = Column(Integer, ForeignKey('pharmacy_db.Staff.staff_id', ondelete='SET NULL'))
+    pharmacist_id = Column(Integer, ForeignKey('Staff.staff_id', ondelete='SET NULL'))
     validation_date = Column(DateTime)
     customer_notes = Column(Text)
     pharmacist_notes = Column(Text)

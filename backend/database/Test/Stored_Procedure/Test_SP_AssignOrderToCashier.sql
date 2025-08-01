@@ -1,5 +1,5 @@
 -- Đảm bảo sử dụng đúng database
-USE `pharmacy_db`;
+-- USE `pharmacy_db`;
 
 -- Xóa dữ liệu cũ để đảm bảo môi trường kiểm tra sạch
 DELETE FROM `Notifications`;

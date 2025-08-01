@@ -5,11 +5,11 @@ from .base import Base # Corrected relative import
 
 class OrderItem(Base):
     __tablename__ = 'OrderItems'
-    __table_args__ = {'schema': 'pharmacy_db'}
+    
 
     order_item_id = Column(Integer, primary_key=True, autoincrement=True)
-    order_id = Column(Integer, ForeignKey('pharmacy_db.Orders.order_id', ondelete='CASCADE'), nullable=False)
-    product_id = Column(Integer, ForeignKey('pharmacy_db.Products.product_id', ondelete='CASCADE'), nullable=False)
+    order_id = Column(Integer, ForeignKey('Orders.order_id', ondelete='CASCADE'), nullable=False)
+    product_id = Column(Integer, ForeignKey('Products.product_id', ondelete='CASCADE'), nullable=False)
     quantity = Column(Integer, nullable=False)
     unit_price = Column(DECIMAL(10, 2), nullable=False)
 

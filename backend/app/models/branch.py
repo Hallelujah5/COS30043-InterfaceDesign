@@ -5,7 +5,6 @@ from .base import Base # Corrected relative import
 
 class Branch(Base):
     __tablename__ = 'Branches'
-    __table_args__ = {'schema': 'pharmacy_db'}
 
     branch_id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False, unique=True)

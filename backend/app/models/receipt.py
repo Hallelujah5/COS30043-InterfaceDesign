@@ -6,10 +6,10 @@ from .base import Base # Corrected relative import
 
 class Receipt(Base):
     __tablename__ = 'Receipts'
-    __table_args__ = {'schema': 'pharmacy_db'}
+
 
     receipt_id = Column(Integer, primary_key=True, autoincrement=True)
-    payment_id = Column(Integer, ForeignKey('pharmacy_db.Payments.payment_id', ondelete='CASCADE'), nullable=False, unique=True)
+    payment_id = Column(Integer, ForeignKey('Payments.payment_id', ondelete='CASCADE'), nullable=False, unique=True)
     receipt_date = Column(DateTime, default=func.now())
     receipt_details = Column(Text)
 

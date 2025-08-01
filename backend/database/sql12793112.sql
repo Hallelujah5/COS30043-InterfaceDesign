@@ -1,15 +1,6 @@
--- Xóa cơ sở dữ liệu nếu nó đã tồn tại để bắt đầu lại từ đầu
-DROP DATABASE IF EXISTS `pharmacy_db`;
-
--- Tạo cơ sở dữ liệu mới
-CREATE DATABASE `pharmacy_db`;
-
--- Sử dụng cơ sở dữ liệu vừa tạo
-USE `pharmacy_db`;
-
 -- Bảng: Branches
 -- Đại diện cho một địa điểm nhà thuốc vật lý.
-CREATE TABLE pharmacy_db.`Branches` (
+CREATE TABLE `Branches` (
     `branch_id` INT AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL UNIQUE,
     `address` VARCHAR(255) NOT NULL,
@@ -19,22 +10,23 @@ CREATE TABLE pharmacy_db.`Branches` (
 -- Bảng: Staff
 -- Đại diện cho nhân viên nói chung, làm cơ sở cho các vai trò chuyên biệt.
 -- Quyền truy cập dựa trên vai trò được quản lý thông qua cột 'role'.
-CREATE TABLE pharmacy_db.`Staff` (
+CREATE TABLE `Staff` (
     `staff_id` INT AUTO_INCREMENT PRIMARY KEY,
     `first_name` VARCHAR(100) NOT NULL,
     `last_name` VARCHAR(100) NOT NULL,
     `email` VARCHAR(255) NOT NULL UNIQUE,
     `phone_number` VARCHAR(20),
-    `password_hash` VARCHAR(255) NOT NULL, -- Lưu trữ mật khẩu đã băm để bảo mật
+    `image_url` VARCHAR(255), 
+    `password_hash` VARCHAR(255) NOT NULL,
     `role` ENUM('Pharmacist', 'Cashier', 'BranchManager', 'WarehouseStaff') NOT NULL,
     `is_active` BOOLEAN DEFAULT TRUE,
     `branch_id` INT,
-    FOREIGN KEY (`branch_id`) REFERENCES `Branches`(`branch_id`) ON DELETE SET NULL -- Nếu một chi nhánh bị xóa, nhân viên có thể trở thành không được gán
+    FOREIGN KEY (`branch_id`) REFERENCES `Branches`(`branch_id`) ON DELETE SET NULL
 );
 
 -- Bảng: Customers
 -- Đại diện cho người dùng cuối tìm kiếm sản phẩm, đặt hàng và tải đơn thuốc.
-CREATE TABLE pharmacy_db.`Customers` (
+CREATE TABLE `Customers` (
     `customer_id` INT AUTO_INCREMENT PRIMARY KEY,
     `first_name` VARCHAR(100) NOT NULL,
     `last_name` VARCHAR(100) NOT NULL,
@@ -43,33 +35,35 @@ CREATE TABLE pharmacy_db.`Customers` (
     `email` VARCHAR(255) NOT NULL UNIQUE,
     `phone_number` VARCHAR(20),
     `address` VARCHAR(255),
-    `registration_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `image_url` VARCHAR(255),
+    `registration_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
     `is_active` BOOLEAN DEFAULT TRUE,
     `password_hash` VARCHAR(255) NOT NULL,
-    `has_prescription` BOOLEAN DEFAULT FALSE -- Kiểm tra xem người dùng hiện tại có prescription hay không
+    `has_prescription` BOOLEAN DEFAULT FALSE
 );
 
 -- Bảng: Products
 -- Đại diện cho các mặt hàng liên quan đến sức khỏe có sẵn để mua.
-CREATE TABLE pharmacy_db.`Products` (
+CREATE TABLE `Products` (
     `product_id` INT AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL UNIQUE,
     `manufacturer` VARCHAR(255),
     `description` TEXT,
     `price` DECIMAL(10, 2) NOT NULL,
-    `category` VARCHAR(100), -- Ví dụ: "Thuốc", "Thực phẩm chức năng", "Chăm sóc cá nhân"
+    `category` VARCHAR(100),
+    `image_url` VARCHAR(255),
     `is_prescription_required` BOOLEAN DEFAULT FALSE
 );
 
--- Bảng: Inventory
+-- Bảng: ProductStock
 -- Quản lý mức tồn kho theo thời gian thực trên các chi nhánh và nhà kho.
 -- Bảng này có khóa chính tổng hợp (branch_id, product_id)
-CREATE TABLE pharmacy_db.`Inventory` (
+CREATE TABLE `ProductStock` (
     `branch_id` INT NOT NULL,
     `product_id` INT NOT NULL,
     `stock_quantity` INT DEFAULT 0 CHECK (`stock_quantity` >= 0), -- Tồn kho không thể âm
     `min_stock_level` INT DEFAULT 10 CHECK (`min_stock_level` >= 0), -- Ngưỡng tồn kho tối thiểu
-    `last_updated` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `last_updated` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`branch_id`, `product_id`),
     FOREIGN KEY (`branch_id`) REFERENCES `Branches`(`branch_id`) ON DELETE CASCADE,
     FOREIGN KEY (`product_id`) REFERENCES `Products`(`product_id`) ON DELETE CASCADE
@@ -77,14 +71,14 @@ CREATE TABLE pharmacy_db.`Inventory` (
 
 -- Bảng: Prescriptions
 -- Quản lý đơn thuốc kỹ thuật số để xác nhận.
-CREATE TABLE pharmacy_db.`Prescriptions` (
+CREATE TABLE `Prescriptions` (
     `prescription_id` INT AUTO_INCREMENT PRIMARY KEY,
     `customer_id` INT NOT NULL,
-    `upload_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `upload_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
     `file_path` VARCHAR(255),
     `validation_status` ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',
     `pharmacist_id` INT, -- Dược sĩ đã xác nhận đơn thuốc này HOẶC được gán để xác nhận
-    `validation_date` DATETIME,
+    `validation_date` TIMESTAMP ,
     `customer_notes` TEXT,
     `pharmacist_notes` TEXT,
     FOREIGN KEY (`customer_id`) REFERENCES `Customers`(`customer_id`) ON DELETE CASCADE,
@@ -93,22 +87,22 @@ CREATE TABLE pharmacy_db.`Prescriptions` (
 
 -- Bảng: Deliveries
 -- Xử lý chi tiết giao hàng cho các đơn hàng.
-CREATE TABLE pharmacy_db.`Deliveries` (
+CREATE TABLE `Deliveries` (
     `delivery_id` INT AUTO_INCREMENT PRIMARY KEY,
     `delivery_address` VARCHAR(255) NOT NULL,
     `delivery_status` ENUM('Scheduled', 'On The Way', 'Delivered', 'Cancelled') DEFAULT 'Scheduled',
     `delivery_party` ENUM('Shopee', 'Grab', 'Be', 'XanhSM'),
-    `estimated_delivery_date` DATETIME,
+    `estimated_delivery_date` TIMESTAMP ,
     `tracking_number` VARCHAR(100)
 );
 
 -- Bảng: Orders
 -- Đóng gói yêu cầu sản phẩm của khách hàng.
-CREATE TABLE pharmacy_db.`Orders` (
+CREATE TABLE `Orders` (
     `order_id` INT AUTO_INCREMENT PRIMARY KEY,
     `customer_id` INT NOT NULL,
     `branch_id` INT NOT NULL, -- Chi nhánh mà đơn hàng được thực hiện
-    `order_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `order_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
     `total_amount` DECIMAL(10, 2) DEFAULT 0.00, -- Sẽ được cập nhật bởi trigger/procedure
     `order_status` ENUM('Pending', 'Paid', 'Processing', 'Ready for Pickup', 'Delivered', 'Cancelled', 'Rejected-Refund') DEFAULT 'Pending',
     `prescription_id` INT UNIQUE, -- Một đơn hàng có thể có tối đa một đơn thuốc
@@ -125,7 +119,7 @@ CREATE TABLE pharmacy_db.`Orders` (
 
 -- Bảng: OrderItems
 -- Đại diện cho một mặt hàng trong một đơn hàng, liên kết sản phẩm với số lượng và các đơn hàng cụ thể.
-CREATE TABLE pharmacy_db.`OrderItems` (
+CREATE TABLE `OrderItems` (
     `order_item_id` INT AUTO_INCREMENT PRIMARY KEY,
     `order_id` INT NOT NULL,
     `product_id` INT NOT NULL,
@@ -137,10 +131,10 @@ CREATE TABLE pharmacy_db.`OrderItems` (
 
 -- Bảng: Payments
 -- Quản lý giao dịch tài chính cho các đơn hàng.
-CREATE TABLE pharmacy_db.`Payments` (
+CREATE TABLE `Payments` (
     `payment_id` INT AUTO_INCREMENT PRIMARY KEY,
     `order_id` INT NOT NULL UNIQUE, -- Mối quan hệ một-một với Order
-    `payment_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `payment_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
     `amount` DECIMAL(10, 2) NOT NULL,
     `payment_method` ENUM('Cash', 'Credit Card', 'Debit Card', 'E-Wallet') NOT NULL,
     `transaction_status` ENUM('Pending', 'Completed', 'Failed', 'Refunded') DEFAULT 'Pending',
@@ -149,17 +143,17 @@ CREATE TABLE pharmacy_db.`Payments` (
 
 -- Bảng: Receipts
 -- Tạo xác nhận giao dịch.
-CREATE TABLE pharmacy_db.`Receipts` (
+CREATE TABLE `Receipts` (
     `receipt_id` INT AUTO_INCREMENT PRIMARY KEY,
     `payment_id` INT NOT NULL UNIQUE, -- Mối quan hệ một-một với Payment
-    `receipt_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `receipt_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
     `receipt_details` TEXT, -- Có thể là chuỗi của các chi tiết liên quan ví dụ 10 x Apple : 100$
     FOREIGN KEY (`payment_id`) REFERENCES `Payments`(`payment_id`) ON DELETE CASCADE
 );
 
 -- Bảng: Notifications
 -- Xử lý tin nhắn cho khách hàng hoặc nhân viên.
-CREATE TABLE pharmacy_db.`Notifications` (
+CREATE TABLE `Notifications` (
     `notification_id` INT AUTO_INCREMENT PRIMARY KEY,
     `customer_id` INT,
     `staff_id` INT,
@@ -167,9 +161,9 @@ CREATE TABLE pharmacy_db.`Notifications` (
     `prescription_id` INT,
     `product_id` INT, -- Thêm cột product_id vào đây
     `message_content` TEXT NOT NULL,
-    `notification_type` ENUM('Order Status', 'Prescription Validation', 'Promotion', 'Inventory Alert', 'System Message', 'Delivery Status') NOT NULL,
+    `notification_type` ENUM('Order Status', 'Prescription Validation', 'Promotion', 'Product Stock Alert', 'System Message', 'Delivery Status') NOT NULL,
     `delivery_id` INT,
-    `sent_date` DATETIME DEFAULT CURRENT_TIMESTAMP,
+    `sent_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
     `branch_id` INT,
     `is_sent` BOOLEAN DEFAULT FALSE, -- Thêm cột này nhằm kiểm soát tin đã được gửi chưa (phục vụ third party)
     FOREIGN KEY (`customer_id`) REFERENCES `Customers`(`customer_id`) ON DELETE CASCADE,
@@ -181,6 +175,18 @@ CREATE TABLE pharmacy_db.`Notifications` (
     FOREIGN KEY (`branch_id`) REFERENCES `Branches`(`branch_id`) ON DELETE SET NULL
 );
 
+-- Bảng: ProductLikes
+-- Lưu trữ lượt "thích" của khách hàng đối với sản phẩm.
+CREATE TABLE `ProductLikes` (
+    `customer_id` INT NOT NULL,
+    `product_id` INT NOT NULL,
+    `liked_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`customer_id`, `product_id`), -- Khóa chính tổng hợp ngăn chặn một khách hàng thích sản phẩm nhiều lần
+    FOREIGN KEY (`customer_id`) REFERENCES `Customers`(`customer_id`) ON DELETE CASCADE,
+    FOREIGN KEY (`product_id`) REFERENCES `Products`(`product_id`) ON DELETE CASCADE
+);
+
+
 -- TRIGGERS
 
 -- Trigger: trg_after_order_item_insert
@@ -190,7 +196,7 @@ CREATE TRIGGER `trg_after_order_item_insert`
 AFTER INSERT ON `OrderItems`
 FOR EACH ROW
 BEGIN
-    UPDATE `Inventory`
+    UPDATE `ProductStock`
     SET `stock_quantity` = `stock_quantity` - NEW.quantity
     WHERE `branch_id` = (SELECT `branch_id` FROM `Orders` WHERE `order_id` = NEW.order_id)
       AND `product_id` = NEW.product_id;
@@ -205,8 +211,8 @@ AFTER UPDATE ON `OrderItems`
 FOR EACH ROW
 BEGIN
     -- Chỉ điều chỉnh nếu số lượng thay đổi
-    IF OLD.quantity <> NEW.quantity THEN
-        UPDATE `Inventory`
+    IF OLD.quantity <> NEW.quantity THEN    
+        UPDATE `ProductStock`
         SET `stock_quantity` = `stock_quantity` + OLD.quantity - NEW.quantity
         WHERE `branch_id` = (SELECT `branch_id` FROM `Orders` WHERE `order_id` = NEW.order_id)
           AND `product_id` = NEW.product_id;
@@ -221,7 +227,7 @@ CREATE TRIGGER `trg_after_order_item_delete`
 AFTER DELETE ON `OrderItems`
 FOR EACH ROW
 BEGIN
-    UPDATE `Inventory`
+    UPDATE `ProductStock`
     SET `stock_quantity` = `stock_quantity` + OLD.quantity
     WHERE `branch_id` = (SELECT `branch_id` FROM `Orders` WHERE `order_id` = OLD.order_id)
       AND `product_id` = OLD.product_id;
@@ -431,7 +437,7 @@ DELIMITER ;
 -- Thông báo cho WarehouseStaff khi sản phẩm xuống dưới ngưỡng tồn kho tối thiểu
 DELIMITER //
 CREATE TRIGGER `trg_low_stock_notify_warehouse_staff`
-AFTER UPDATE ON `Inventory`
+AFTER UPDATE ON `ProductStock`
 FOR EACH ROW
 BEGIN
     -- Chỉ gửi thông báo nếu tồn kho giảm xuống dưới mức tối thiểu HOẶC nếu nó đã dưới mức tối thiểu và tiếp tục giảm
@@ -442,7 +448,7 @@ BEGIN
             NEW.branch_id,
             NEW.product_id,
             CONCAT('Sản phẩm "', P.name, '" (ID: ', NEW.product_id, ') tại chi nhánh ID: ', NEW.branch_id, ' đang dưới mức tồn kho tối thiểu. Tồn kho hiện tại: ', NEW.stock_quantity),
-            'Inventory Alert'
+            'Product Stock Alert'
         FROM `Staff` S
         LEFT JOIN `Products` P ON NEW.product_id = P.product_id
         WHERE S.role = 'WarehouseStaff'
@@ -465,7 +471,7 @@ CREATE PROCEDURE `SP_PlaceOrder`(
     IN p_prescription_id INT,
     IN p_delivery_address VARCHAR(255),
     IN p_delivery_party ENUM('Shopee', 'Grab', 'Be', 'XanhSM'),
-    IN p_estimated_delivery_date DATETIME,
+    IN p_estimated_delivery_date TIMESTAMP ,
     IN p_tracking_number VARCHAR(100),
     IN p_discount_amount DECIMAL(10,2),
     IN p_order_source ENUM('In-store', 'Online')
@@ -508,7 +514,7 @@ BEGIN
         SELECT `price` INTO v_unit_price FROM `Products` WHERE `product_id` = v_product_id;
 
         -- Kiểm tra tồn kho trước khi thêm OrderItem
-        SELECT stock_quantity INTO @current_stock FROM `Inventory` WHERE `branch_id` = p_branch_id AND `product_id` = v_product_id;
+        SELECT stock_quantity INTO @current_stock FROM `ProductStock` WHERE `branch_id` = p_branch_id AND `product_id` = v_product_id;
         IF @current_stock IS NULL OR @current_stock < v_quantity THEN
             -- Rollback và báo lỗi nếu không đủ tồn kho
             ROLLBACK;
@@ -623,10 +629,10 @@ BEGIN
 END //
 DELIMITER ;
 
--- Procedure: SP_RestockInventory
+-- Procedure: SP_RestockProductStock
 -- Cập nhật số lượng tồn kho cho một sản phẩm tại một chi nhánh.
 DELIMITER //
-CREATE PROCEDURE `SP_RestockInventory`(
+CREATE PROCEDURE `SP_RestockProductStock`(
     IN p_branch_id INT,
     IN p_product_id INT,
     IN p_quantity_to_add INT
@@ -637,7 +643,7 @@ BEGIN
     -- Lấy tên sản phẩm để sử dụng trong thông báo
     SELECT `name` INTO v_product_name FROM `Products` WHERE `product_id` = p_product_id;
 
-    INSERT INTO `Inventory` (`branch_id`, `product_id`, `stock_quantity`)
+    INSERT INTO `ProductStock` (`branch_id`, `product_id`, `stock_quantity`)
     VALUES (p_branch_id, p_product_id, p_quantity_to_add)
     ON DUPLICATE KEY UPDATE `stock_quantity` = `stock_quantity` + p_quantity_to_add;
 
@@ -648,7 +654,7 @@ BEGIN
         p_branch_id,
         p_product_id,
         CONCAT('Đã thêm thành công sản phẩm "', v_product_name, '" (ID: ', p_product_id, ') vào tồn kho của chi nhánh ID: ', p_branch_id, '. Số lượng thêm là: ', p_quantity_to_add, '.'),
-        'Inventory Alert' -- Có thể tạo một loại 'Restock Confirmation' nếu muốn tách biệt
+        'Product Stock Alert' -- Có thể tạo một loại 'Restock Confirmation' nếu muốn tách biệt
     FROM `Staff` S
     WHERE S.role = 'WarehouseStaff'
       AND S.is_active = TRUE
@@ -661,8 +667,8 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE `SP_GenerateSalesReport`(
     IN p_branch_id INT,
-    IN p_start_date DATETIME,
-    IN p_end_date DATETIME
+    IN p_start_date TIMESTAMP ,
+    IN p_end_date TIMESTAMP 
 )
 BEGIN
     SELECT
@@ -687,30 +693,40 @@ END //
 DELIMITER ;
 
 -- Procedure: SP_RegisterNewStaff
--- Đăng ký một nhân viên mới vào hệ thống.
+-- Đăng ký một nhân viên mới vào hệ thống và tạo thông báo.
 DELIMITER //
 CREATE PROCEDURE `SP_RegisterNewStaff`(
     IN p_first_name VARCHAR(100),
     IN p_last_name VARCHAR(100),
     IN p_email VARCHAR(255),
     IN p_phone_number VARCHAR(20),
-    IN p_raw_password VARCHAR(255), -- Renamed to p_raw_password to indicate it's unhashed
+    IN p_raw_password VARCHAR(255),
     IN p_role ENUM('Pharmacist', 'Cashier', 'BranchManager', 'WarehouseStaff'),
-    IN p_branch_id INT
+    IN p_branch_id INT,
+    IN p_image_url VARCHAR(255)
 )
 BEGIN
-    -- Băm mật khẩu trước khi lưu trữ
-    DECLARE hashed_password VARCHAR(255);
-    SET hashed_password = SHA2(p_raw_password, 256); -- Use SHA256 for hashing
+    DECLARE v_new_staff_id INT;
 
-    INSERT INTO `Staff` (`first_name`, `last_name`, `email`, `phone_number`, `password_hash`, `role`, `branch_id`)
-    VALUES (p_first_name, p_last_name, p_email, p_phone_number, hashed_password, p_role, p_branch_id);
-    SELECT LAST_INSERT_ID() AS new_staff_id;
+    INSERT INTO `Staff` (`first_name`, `last_name`, `email`, `phone_number`, `password_hash`, `role`, `branch_id`, `image_url`)
+    VALUES (p_first_name, p_last_name, p_email, p_phone_number, p_raw_password, p_role, p_branch_id, p_image_url);
+
+    SET v_new_staff_id = LAST_INSERT_ID();
+    SELECT v_new_staff_id AS new_staff_id;
+
+    -- Thêm thông báo cho nhân viên mới
+    INSERT INTO `Notifications` (`staff_id`, `message_content`, `notification_type`, `branch_id`)
+    VALUES (
+        v_new_staff_id,
+        CONCAT('Tài khoản nhân viên của bạn đã được tạo với vai trò ', p_role, '.'),
+        'System Message',
+        p_branch_id
+    );
 END //
 DELIMITER ;
 
 -- Procedure: SP_RegisterNewCustomer
--- Đăng ký một khách hàng mới vào hệ thống.
+-- Đăng ký một khách hàng mới vào hệ thống và tạo thông báo.
 DELIMITER //
 CREATE PROCEDURE `SP_RegisterNewCustomer`(
     IN p_first_name VARCHAR(100),
@@ -718,16 +734,107 @@ CREATE PROCEDURE `SP_RegisterNewCustomer`(
     IN p_email VARCHAR(255),
     IN p_phone_number VARCHAR(20),
     IN p_address VARCHAR(255),
-    IN p_raw_password VARCHAR(255) -- Added parameter for unhashed password
+    IN p_raw_password VARCHAR(255),
+    IN p_image_url VARCHAR(255)
 )
 BEGIN
-    -- Băm mật khẩu trước khi lưu trữ
-    DECLARE hashed_password VARCHAR(255);
-    SET hashed_password = SHA2(p_raw_password, 256); -- Use SHA256 for hashing
+    DECLARE v_new_customer_id INT;
 
-    INSERT INTO `Customers` (`first_name`, `last_name`, `email`, `phone_number`, `address`, `password_hash`)
-    VALUES (p_first_name, p_last_name, p_email, p_phone_number, p_address, hashed_password);
-    SELECT LAST_INSERT_ID() AS new_customer_id;
+    INSERT INTO `Customers` (`first_name`, `last_name`, `email`, `phone_number`, `address`, `password_hash`, `image_url`)
+    VALUES (p_first_name, p_last_name, p_email, p_phone_number, p_address, p_raw_password, p_image_url);
+
+    SET v_new_customer_id = LAST_INSERT_ID();
+    SELECT v_new_customer_id AS new_customer_id;
+
+    -- Thêm thông báo cho khách hàng mới
+    INSERT INTO `Notifications` (`customer_id`, `message_content`, `notification_type`)
+    VALUES (
+        v_new_customer_id,
+        'Tài khoản khách hàng của bạn đã được tạo thành công.',
+        'System Message'
+    );
+END //
+DELIMITER ;
+
+-- Procedure: SP_ImportNewProduct
+-- Tạo một sản phẩm mới vào hệ thống và thông báo cho WarehouseStaff.
+DELIMITER //
+CREATE PROCEDURE `SP_ImportNewProduct`(
+    IN p_name VARCHAR(255),
+    IN p_manufacturer VARCHAR(255),
+    IN p_description TEXT,
+    IN p_price DECIMAL(10, 2),
+    IN p_category VARCHAR(100),
+    IN p_is_prescription_required BOOLEAN,
+    IN p_image_url VARCHAR(255)
+)
+BEGIN
+    DECLARE v_new_product_id INT;
+
+    INSERT INTO `Products` (`name`, `manufacturer`, `description`, `price`, `category`, `is_prescription_required`, `image_url`)
+    VALUES (p_name, p_manufacturer, p_description, p_price, p_category, p_is_prescription_required, p_image_url);
+
+    SET v_new_product_id = LAST_INSERT_ID();
+    SELECT v_new_product_id AS new_product_id;
+
+    -- Thêm thông báo cho tất cả WarehouseStaff
+    INSERT INTO `Notifications` (`staff_id`, `product_id`, `message_content`, `notification_type`)
+    SELECT
+        S.staff_id,
+        v_new_product_id,
+        CONCAT('Sản phẩm mới "', p_name, '" (ID: ', v_new_product_id, ') đã được nhập vào hệ thống.'),
+        'Product Stock Alert'
+    FROM `Staff` S
+    WHERE S.role = 'WarehouseStaff' AND S.is_active = TRUE;
+END //
+DELIMITER ;
+
+-- Procedure: SP_UpdateProduct
+-- Cập nhật thông tin sản phẩm hiện có và thông báo cho WarehouseStaff.
+DELIMITER //
+CREATE PROCEDURE `SP_UpdateProduct`(
+    IN p_product_id INT,
+    IN p_name VARCHAR(255),
+    IN p_manufacturer VARCHAR(255),
+    IN p_description TEXT,
+    IN p_price DECIMAL(10, 2),
+    IN p_category VARCHAR(100),
+    IN p_is_prescription_required BOOLEAN,
+    IN p_image_url VARCHAR(255)
+)
+BEGIN
+    DECLARE v_product_exists BOOLEAN DEFAULT FALSE;
+    DECLARE v_old_name VARCHAR(255);
+
+    -- Kiểm tra xem sản phẩm có tồn tại không
+    SELECT TRUE, `name` INTO v_product_exists, v_old_name
+    FROM `Products`
+    WHERE `product_id` = p_product_id;
+
+    IF v_product_exists THEN
+        UPDATE `Products`
+        SET
+            `name` = p_name,
+            `manufacturer` = p_manufacturer,
+            `description` = p_description,
+            `price` = p_price,
+            `category` = p_category,
+            `is_prescription_required` = p_is_prescription_required,
+            `image_url` = p_image_url
+        WHERE `product_id` = p_product_id;
+
+        -- Thêm thông báo cho tất cả WarehouseStaff
+        INSERT INTO `Notifications` (`staff_id`, `product_id`, `message_content`, `notification_type`)
+        SELECT
+            S.staff_id,
+            p_product_id,
+            CONCAT('Thông tin sản phẩm "', p_name, '" (ID: ', p_product_id, ') đã được cập nhật.'),
+            'Product Stock Alert' -- Hoặc 'System Message' tùy theo mức độ quan trọng
+        FROM `Staff` S
+        WHERE S.role = 'WarehouseStaff' AND S.is_active = TRUE;
+    ELSE
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Sản phẩm không tồn tại để cập nhật.';
+    END IF;
 END //
 DELIMITER ;
 
@@ -772,10 +879,10 @@ BEGIN
 END //
 DELIMITER ;
 
--- Procedure: SP_GetBranchInventoryStatus
+-- Procedure: SP_GetBranchProductStockStatus
 -- Lấy trạng thái tồn kho của tất cả sản phẩm tại một chi nhánh cụ thể, bao gồm cả ngưỡng tồn kho tối thiểu.
 DELIMITER //
-CREATE PROCEDURE `SP_GetBranchInventoryStatus`(
+CREATE PROCEDURE `SP_GetBranchProductStockStatus`(
     IN p_branch_id INT
 )
 BEGIN
@@ -791,7 +898,7 @@ BEGIN
             ELSE 'Đủ'
         END AS stock_status_alert -- Added stock alert column
     FROM
-        `Inventory` I
+        `ProductStock` I
     JOIN
         `Products` P ON I.product_id = P.product_id
     WHERE
@@ -894,43 +1001,155 @@ BEGIN
 END //
 DELIMITER ;
 
--- Procedure: SP_GetCashierOrderDetailsForReview
--- Lấy thông tin chi tiết đơn hàng (và đơn thuốc nếu có) cho Thu ngân kiểm tra lần cuối
 DELIMITER //
-CREATE PROCEDURE `SP_GetCashierOrderDetailsForReview`(
-    IN p_order_id INT,
+
+CREATE PROCEDURE `SP_GetCashierOrdersForCashier`(
     IN p_cashier_id INT
 )
 BEGIN
-    -- Kiểm tra xem thu ngân có được gán cho đơn hàng này không
-    IF EXISTS (SELECT 1 FROM `Orders` WHERE order_id = p_order_id AND cashier_id = p_cashier_id AND order_status = 'Processing') THEN
-        -- Lấy thông tin cần thiết của đơn hàng và đơn thuốc (nếu có)
-        SELECT
-            O.order_id,
-            O.customer_id,
-            O.prescription_id,
-            P.file_path AS prescription_file_path -- Đường dẫn file đơn thuốc
-        FROM
-            `Orders` O
-        LEFT JOIN
-            `Prescriptions` P ON O.prescription_id = P.prescription_id
-        WHERE
-            O.order_id = p_order_id;
+    -- Lấy danh sách tất cả các đơn hàng được gán cho thu ngân này và đang ở trạng thái 'Processing'
+    SELECT
+        O.order_id,
+        O.customer_id,
+        C.first_name AS customer_first_name,
+        C.last_name AS customer_last_name,
+        O.order_date,
+        O.total_amount,
+        O.order_status,
+        O.prescription_id,
+        P.file_path AS prescription_file_path -- Đường dẫn file đơn thuốc nếu có
+    FROM
+        `Orders` O
+    JOIN
+        `Customers` C ON O.customer_id = C.customer_id
+    LEFT JOIN
+        `Prescriptions` P ON O.prescription_id = P.prescription_id
+    WHERE
+        O.cashier_id = p_cashier_id AND O.order_status = 'Processing'
+    ORDER BY
+        O.order_date ASC;
 
-		-- Lấy danh sách các mặt hàng trong đơn hàng, tập trung vào thông tin sản phẩm và yêu cầu đơn thuốc
-        SELECT
-            OI.order_item_id,
-            Pr.product_id,
-            Pr.name AS product_name,
-            Pr.is_prescription_required -- Cần kiểm tra xem sản phẩm có yêu cầu đơn thuốc không
-        FROM
-            `OrderItems` OI
-        JOIN
-            `Products` Pr ON OI.product_id = Pr.product_id
-        WHERE
-            OI.order_id = p_order_id;
-    ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đơn hàng không tồn tại hoặc không được gán cho thu ngân này để kiểm tra.';
+    -- Lấy chi tiết các mặt hàng cho TẤT CẢ các đơn hàng được gán cho thu ngân này và đang ở trạng thái 'Processing'
+    SELECT
+        OI.order_id,
+        OI.order_item_id,
+        Pr.product_id,
+        Pr.name AS product_name,
+        OI.quantity,
+        OI.unit_price,
+        Pr.is_prescription_required -- Cần kiểm tra xem sản phẩm có yêu cầu đơn thuốc không
+    FROM
+        `OrderItems` OI
+    JOIN
+        `Products` Pr ON OI.product_id = Pr.product_id
+    JOIN
+        `Orders` O ON OI.order_id = O.order_id
+    WHERE
+        O.cashier_id = p_cashier_id AND O.order_status = 'Processing'
+    ORDER BY
+        OI.order_id, Pr.name;
+
+END //
+
+DELIMITER ;
+
+DELIMITER //
+-- Tạo PROCEDURE SP_CancelOrder để hủy một đơn hàng
+CREATE PROCEDURE `SP_CancelOrder`(
+    IN p_order_id INT -- ID của đơn hàng cần hủy
+)
+BEGIN
+    -- Khai báo các biến cục bộ để lưu trữ thông tin đơn hàng
+    DECLARE v_current_order_status ENUM('Pending', 'Paid', 'Processing', 'Ready for Pickup', 'Delivered', 'Cancelled', 'Rejected-Refund');
+    DECLARE v_payment_id INT;
+    DECLARE v_delivery_id INT;
+    DECLARE v_customer_id INT;
+    DECLARE v_branch_id INT;
+    DECLARE v_error_message VARCHAR(255); -- Biến để chứa thông báo lỗi
+
+    -- Lấy thông tin hiện tại của đơn hàng từ bảng Orders
+    SELECT
+        `order_status`,
+        `delivery_id`,
+        `customer_id`,
+        `branch_id`
+    INTO
+        v_current_order_status,
+        v_delivery_id,
+        v_customer_id,
+        v_branch_id
+    FROM `Orders`
+    WHERE `order_id` = p_order_id;
+
+    -- Lấy payment_id từ bảng Payments (nếu có)
+    SELECT `payment_id`
+    INTO v_payment_id
+    FROM `Payments`
+    WHERE `order_id` = p_order_id;
+
+    -- Kiểm tra nếu đơn hàng không tồn tại
+    IF v_current_order_status IS NULL THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đơn hàng không tồn tại.';
     END IF;
+
+    -- Kiểm tra nếu đơn hàng ở trạng thái không thể hủy
+    -- Các trạng thái 'Delivered', 'Cancelled', 'Rejected-Refund' không cho phép hủy
+    IF v_current_order_status IN ('Delivered', 'Cancelled', 'Rejected-Refund') THEN
+        SET v_error_message = CONCAT('Không thể hủy đơn hàng có trạng thái hiện tại là: ', v_current_order_status, '.');
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_error_message;
+    END IF;
+
+    -- Bắt đầu giao dịch để đảm bảo tính toàn vẹn dữ liệu
+    START TRANSACTION;
+
+    -- 1. Cập nhật trạng thái đơn hàng thành 'Cancelled'
+    -- Trigger `trg_after_order_status_update_notify_customer` sẽ tự động xử lý thông báo cho khách hàng
+    UPDATE `Orders`
+    SET `order_status` = 'Cancelled'
+    WHERE `order_id` = p_order_id;
+
+    -- 2. Hoàn lại tồn kho cho các sản phẩm trong đơn hàng
+    -- Tăng số lượng `stock_quantity` trong bảng `ProductStock` cho từng mặt hàng trong đơn hàng
+    UPDATE `ProductStock` PS
+    JOIN `OrderItems` OI ON PS.product_id = OI.product_id
+    SET PS.stock_quantity = PS.stock_quantity + OI.quantity -- SET clause moved before WHERE
+    WHERE OI.order_id = p_order_id AND PS.branch_id = v_branch_id;
+
+    -- 3. Cập nhật trạng thái thanh toán nếu có bản ghi thanh toán
+    IF v_payment_id IS NOT NULL THEN
+        -- Lấy trạng thái giao dịch hiện tại của thanh toán
+        SELECT transaction_status INTO @current_payment_status FROM `Payments` WHERE payment_id = v_payment_id;
+
+        -- Nếu thanh toán đã "Completed", chuyển sang "Refunded"
+        IF @current_payment_status = 'Completed' THEN
+            UPDATE `Payments`
+            SET
+                `transaction_status` = 'Refunded',
+                `payment_date` = CURRENT_TIMESTAMP -- Cập nhật thời gian hoàn tiền
+            WHERE `payment_id` = v_payment_id;
+
+            -- Gửi thông báo cụ thể về việc hoàn tiền cho khách hàng
+            -- (Trigger `trg_after_payment_completed` không xử lý trạng thái 'Refunded' nên cần thông báo riêng)
+            INSERT INTO `Notifications` (`customer_id`, `order_id`, `message_content`, `notification_type`)
+            VALUES (v_customer_id, p_order_id, CONCAT('Thanh toán cho đơn hàng ID: ', p_order_id, ' đã được hoàn tiền.'), 'Order Status');
+        -- Nếu thanh toán đang "Pending", chuyển sang "Cancelled"
+        ELSEIF @current_payment_status = 'Pending' THEN
+            UPDATE `Payments`
+            SET `transaction_status` = 'Cancelled'
+            WHERE `payment_id` = v_payment_id;
+        END IF;
+    END IF;
+
+    -- 4. Cập nhật trạng thái giao hàng nếu có bản ghi giao hàng
+    -- Trigger `trg_after_delivery_status_update_notify_customer` sẽ tự động xử lý thông báo cho khách hàng
+    IF v_delivery_id IS NOT NULL THEN
+        UPDATE `Deliveries`
+        SET `delivery_status` = 'Cancelled'
+        WHERE `delivery_id` = v_delivery_id;
+    END IF;
+
+    -- Kết thúc giao dịch
+    COMMIT;
+
 END //
 DELIMITER ;

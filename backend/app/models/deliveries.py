@@ -5,7 +5,7 @@ from .base import Base # Corrected relative import
 
 class Deliveries(Base):
     __tablename__ = 'Deliveries'
-    __table_args__ = {'schema': 'pharmacy_db'}
+
 
     delivery_id = Column(Integer, primary_key=True, autoincrement=True)
     delivery_address = Column(String(255), nullable=False)

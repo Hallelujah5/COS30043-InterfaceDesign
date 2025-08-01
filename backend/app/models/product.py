@@ -5,7 +5,7 @@ from .base import Base # Corrected relative import
 
 class Product(Base):
     __tablename__ = 'Products'
-    __table_args__ = {'schema': 'pharmacy_db'}
+
 
     product_id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(255), nullable=False, unique=True)

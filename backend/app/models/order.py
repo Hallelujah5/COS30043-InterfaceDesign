@@ -6,19 +6,18 @@ from .base import Base # Corrected relative import
 
 class Order(Base):
     __tablename__ = 'Orders'
-    __table_args__ = {'schema': 'pharmacy_db'}
 
     order_id = Column(Integer, primary_key=True, autoincrement=True)
-    customer_id = Column(Integer, ForeignKey('pharmacy_db.Customers.customer_id', ondelete='CASCADE'), nullable=False)
-    branch_id = Column(Integer, ForeignKey('pharmacy_db.Branches.branch_id', ondelete='CASCADE'), nullable=False)
+    customer_id = Column(Integer, ForeignKey('Customers.customer_id', ondelete='CASCADE'), nullable=False)
+    branch_id = Column(Integer, ForeignKey('Branches.branch_id', ondelete='CASCADE'), nullable=False)
     order_date = Column(DateTime, default=func.now())
     total_amount = Column(DECIMAL(10, 2), default=0.00)
     order_status = Column(Enum('Pending', 'Paid', 'Processing', 'Ready for Pickup', 'Delivered', 'Cancelled', 'Rejected-Refund'), default='Pending')
-    prescription_id = Column(Integer, ForeignKey('pharmacy_db.Prescriptions.prescription_id', ondelete='SET NULL'), unique=True)
-    delivery_id = Column(Integer, ForeignKey('pharmacy_db.Deliveries.delivery_id', ondelete='SET NULL'), unique=True)
+    prescription_id = Column(Integer, ForeignKey('Prescriptions.prescription_id', ondelete='SET NULL'), unique=True)
+    delivery_id = Column(Integer, ForeignKey('Deliveries.delivery_id', ondelete='SET NULL'), unique=True)
     discount_amount = Column(DECIMAL(10,2), default=0.00)
     order_source = Column(Enum('In-store', 'Online'))
-    cashier_id = Column(Integer, ForeignKey('pharmacy_db.Staff.staff_id', ondelete='SET NULL'))
+    cashier_id = Column(Integer, ForeignKey('Staff.staff_id', ondelete='SET NULL'))
 
     # Relationships
     customer = relationship("Customer", back_populates="orders")

@@ -1,30 +1,30 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from dotenv import load_dotenv
 import os
-import pymysql
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from dotenv import load_dotenv # Optional: for local .env file
 
-# Nhập đối tượng Base từ gói models của bạn
-# Đây là Base duy nhất mà tất cả các model của bạn sẽ kế thừa
-from app.models.base import Base
-
+# Load environment variables from a .env file if it exists (for local development)
 load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:root@localhost/pharmacy_db")
-engine = create_engine(DATABASE_URL)
+
+# --- Read Database Credentials from Environment Variables ---
+# Render will provide these values in the production environment.
+# The default values are now set to your new freesqldatabase.com credentials.
+DB_HOSTNAME = os.getenv("DATABASE_HOSTNAME", "sql12.freesqldatabase.com")
+DB_USERNAME = os.getenv("DATABASE_USERNAME", "sql12793112")
+DB_PASSWORD = os.getenv("DATABASE_PASSWORD", "ZtudPX8Zmd")
+DB_NAME = os.getenv("DATABASE_NAME", "sql12793112")
+
+# Construct the database URL
+SQLALCHEMY_DATABASE_URL = f"mysql+pymysql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}/{DB_NAME}"
+
+# --- Standard SQLAlchemy Setup (no changes needed below) ---
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Hàm này tạo kết nối PyMySQL trực tiếp, dùng cho các Stored Procedure
-def get_db_connection():
-    connection = pymysql.connect(
-        host=os.getenv("DB_HOST", "localhost"),
-        user=os.getenv("DB_USER", "root"),
-        password=os.getenv("DB_PASSWORD", "root"),
-        database=os.getenv("DB_NAME", "pharmacy_db"),
-        cursorclass=pymysql.cursors.DictCursor
-    )
-    return connection
+Base = declarative_base()
 
-# Dependency cho FastAPI để cung cấp session SQLAlchemy
 def get_db():
     db = SessionLocal()
     try:
@@ -32,7 +32,8 @@ def get_db():
     finally:
         db.close()
 
-# Hàm này sẽ tạo tất cả các bảng được định nghĩa trong SQLAlchemy models
-# Nó cần được gọi sau khi tất cả các model đã được load vào bộ nhớ
+# You might need a function to create tables if you don't have one
 def create_db_tables():
+    # This function is usually called once at startup in main.py
     Base.metadata.create_all(bind=engine)
+

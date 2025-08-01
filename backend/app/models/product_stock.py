@@ -6,10 +6,9 @@ from .base import Base # Corrected relative import
 
 class ProductStock(Base):
     __tablename__ = 'ProductStock'
-    __table_args__ = {'schema': 'pharmacy_db'}
 
-    branch_id = Column(Integer, ForeignKey('pharmacy_db.Branches.branch_id', ondelete='CASCADE'), primary_key=True)
-    product_id = Column(Integer, ForeignKey('pharmacy_db.Products.product_id', ondelete='CASCADE'), primary_key=True)
+    branch_id = Column(Integer, ForeignKey('Branches.branch_id', ondelete='CASCADE'), primary_key=True)
+    product_id = Column(Integer, ForeignKey('Products.product_id', ondelete='CASCADE'), primary_key=True)
     stock_quantity = Column(Integer, default=0)
     min_stock_level = Column(Integer, default=10)
     last_updated = Column(DateTime, default=func.now(), onupdate=func.now())

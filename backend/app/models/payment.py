@@ -6,10 +6,9 @@ from .base import Base # Corrected relative import
 
 class Payment(Base):
     __tablename__ = 'Payments'
-    __table_args__ = {'schema': 'pharmacy_db'}
 
     payment_id = Column(Integer, primary_key=True, autoincrement=True)
-    order_id = Column(Integer, ForeignKey('pharmacy_db.Orders.order_id', ondelete='CASCADE'), nullable=False, unique=True)
+    order_id = Column(Integer, ForeignKey('Orders.order_id', ondelete='CASCADE'), nullable=False, unique=True)
     payment_date = Column(DateTime, default=func.now())
     amount = Column(DECIMAL(10, 2), nullable=False)
     payment_method = Column(Enum('Cash', 'Credit Card', 'Debit Card', 'E-Wallet'), nullable=False)

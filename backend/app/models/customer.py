@@ -6,7 +6,7 @@ from .base import Base # Corrected relative import
 
 class Customer(Base):
     __tablename__ = 'Customers'
-    __table_args__ = {'schema': 'pharmacy_db'}
+ 
 
     customer_id = Column(Integer, primary_key=True, autoincrement=True)
     first_name = Column(String(100), nullable=False)

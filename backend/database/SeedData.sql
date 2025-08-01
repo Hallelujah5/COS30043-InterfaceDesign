@@ -2,7 +2,7 @@
 -- Chứa dữ liệu mẫu để điền vào cơ sở dữ liệu pharmacy_db
 -- Luôn ưu tiên sử dụng Stored Procedure để thêm dữ liệu nếu có thể.
 
-USE `pharmacy_db`;
+-- USE `pharmacy_db`;
 
 -- Thêm dữ liệu vào bảng Branches
 INSERT INTO `Branches` (`name`, `address`, `phone_number`) VALUES

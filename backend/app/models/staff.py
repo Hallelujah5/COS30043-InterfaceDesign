@@ -5,7 +5,7 @@ from .base import Base # Corrected relative import
 
 class Staff(Base):
     __tablename__ = 'Staff'
-    __table_args__ = {'schema': 'pharmacy_db'}
+
 
     staff_id = Column(Integer, primary_key=True, autoincrement=True)
     first_name = Column(String(100), nullable=False)
@@ -16,7 +16,7 @@ class Staff(Base):
     password_hash = Column(String(255), nullable=False)
     role = Column(Enum('Pharmacist', 'Cashier', 'BranchManager', 'WarehouseStaff'), nullable=False)
     is_active = Column(Boolean, default=True)
-    branch_id = Column(Integer, ForeignKey('pharmacy_db.Branches.branch_id', ondelete='SET NULL'))
+    branch_id = Column(Integer, ForeignKey('Branches.branch_id', ondelete='SET NULL'))
 
     # Relationships
     branch = relationship("Branch", back_populates="staff")
