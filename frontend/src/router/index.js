@@ -14,6 +14,7 @@ import Payments from '../views/Payment.vue';
 import TaskDelegation from '../views/Task-delegation.vue';
 import NotFound from '../views/NotFound.vue';
 import Restock from '@/views/Restock.vue';
+import ProductManagement from '@/views/Product-management.vue';
 
 
 const router = createRouter({
@@ -86,8 +87,11 @@ const router = createRouter({
         name: 'restock',
         component: Restock,
     },
-
-
+    {
+        path: '/product-management',
+        name: 'productmanagement',
+        component: ProductManagement,
+    },
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',

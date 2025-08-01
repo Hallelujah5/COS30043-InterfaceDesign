@@ -55,6 +55,9 @@
           <li v-if="!isCustomer && staffType === 'BranchManager'" class="nav-item">
             <router-link to="/restock" class="nav-link">Restock</router-link>
           </li>
+           <li v-if="!isCustomer && staffType === 'BranchManager'" class="nav-item">
+            <router-link to="/product-management" class="nav-link">Products</router-link>
+          </li>
         </ul>
 
       

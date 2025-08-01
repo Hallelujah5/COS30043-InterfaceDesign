@@ -1,5 +1,5 @@
 # app/api/product_routes.py
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, APIRouter, Depends, HTTPException, status, File, Form, UploadFile
 from sqlalchemy.orm import Session
 from app.services.product_service import ProductService
 from app.services.product_like_service import ProductLikeService
@@ -9,6 +9,7 @@ from typing import List, Dict, Any, Optional
 from app.schemas.product import LikedProduct 
 from app.schemas.customer import Customer
 from app.utils.auth import get_current_active_customer
+import os, shutil
 
 
 
@@ -21,35 +22,89 @@ def get_product_service() -> ProductService:
 def get_product_like_service() -> ProductLikeService:
     return ProductLikeService()
 
-@router.post("/", response_model=dict, status_code=status.HTTP_201_CREATED) # Changed to dict for message and ID
+@router.post("/", response_model=dict, status_code=status.HTTP_201_CREATED)
 async def create_product(
-    request: ProductBase, # Use ProductBase or a specific ProductCreate schema
-    product_service: ProductService = Depends(get_product_service),
-    db: Session = Depends(get_db) # You might not need db directly if service uses SP via raw connection
+    # Instead of a single Pydantic model, we now accept form data
+    name: str = Form(...),
+    manufacturer: Optional[str] = Form(None),
+    description: Optional[str] = Form(None),
+    price: float = Form(...),
+    category: Optional[str] = Form(None),
+    is_prescription_required: bool = Form(False),
+    file: Optional[UploadFile] = File(None), # The image file is now optional
+    product_service: ProductService = Depends(get_product_service)
+    # current_staff: Staff = Depends(get_current_active_staff) # Optional: for role protection
 ):
     """
-    Creates a new product in the system using a stored procedure.
+    Creates a new product, now accepting an image file upload.
     """
-    try:
-        new_product_id = product_service.import_new_product(
-            request.name,
-            request.manufacturer,
-            request.description,
-            request.price,
-            request.category,
-            request.is_prescription_required,
-            request.image_url # Thêm image_url vào đây
-        )
-        if not new_product_id:
+    image_url = None
+    if file:
+        # Validate file type
+        ext = os.path.splitext(file.filename)[1].lower()
+        if ext not in [".png", ".jpg", ".jpeg"] or file.content_type not in ["image/png", "image/jpeg"]:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Failed to create product, possibly duplicate name."
+                detail="Only .png and .jpg image files are allowed."
             )
+
+        # Define the directory to save product images
+        upload_dir = "app/static/products"
+        os.makedirs(upload_dir, exist_ok=True)
+
+        # Create a unique filename to avoid overwrites (optional but recommended)
+        # For simplicity, we'll use the original filename
+        file_path = os.path.join(upload_dir, file.filename)
+        
+        # Save the file to the server's disk
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+        
+        # Create the publicly accessible URL for the saved image
+        image_url = f"http://localhost:8000/static/products/{file.filename}"
+
+    try:
+        new_product_id = product_service.import_new_product(
+            name=name,
+            manufacturer=manufacturer,
+            description=description,
+            price=price,
+            category=category,
+            is_prescription_required=is_prescription_required,
+            image_url=image_url  
+        )
         return {"product_id": new_product_id, "message": "Product created successfully."}
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal server error: {e}")
+        # Clean up uploaded file if database operation fails
+        if image_url and os.path.exists(file_path):
+            os.remove(file_path)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+@router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_product(
+    product_id: int,
+    db: Session = Depends(get_db),
+    product_service: ProductService = Depends(get_product_service)
+    # Add staff dependency for protection:
+    # current_staff: Staff = Depends(get_current_active_staff)
+):
+    """
+    Deletes a product from the system.
+    """
+    # Add role check:
+    # if current_staff.role != "Manager":
+    #     raise HTTPException(status_code=403, detail="Not authorized to delete products")
+    try:
+        success = product_service.delete_product(db, product_id)
+        if not success:
+            # This case is handled by the service raising a ValueError
+            pass
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
 
 @router.put("/{product_id}", response_model=dict) # Changed to dict for message
 async def update_product_info(

@@ -7,12 +7,6 @@
           <h2>Task Delegation</h2>
           <h4 v-if="branchName">Branch: {{ branchName }}</h4>
         </div>
-        <div class="d-flex gap-2">
-          <button v-if="isBranchManager" class="btn btn-success" @click="goToManagerDashboard">
-            <UserCheck size="16" class="me-2" />
-            Manager Dashboard <ArrowRight size="16" />
-          </button>
-        </div>
       </div>
       <div class="row">
         <div class="col-md-6 mb-4">

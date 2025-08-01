@@ -36,6 +36,16 @@ class ProductService:
             
         return products_with_likes
 
+    def delete_product(self, db: Session, product_id: int) -> bool:
+        """
+        Business logic to delete a product.
+        """
+        product = self.product_repo.get_product_by_id(db, product_id)
+        if not product:
+            raise ValueError(f"Product with ID {product_id} not found.")
+        
+        return self.product_repo.delete_product(db, product_id)
+
     def get_product_details(self, db: Session, product_id: int) -> ProductSchema:
         """
         Gets details for a specific product, including its like count.

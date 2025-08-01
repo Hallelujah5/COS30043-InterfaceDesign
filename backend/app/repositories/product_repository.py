@@ -115,3 +115,14 @@ class ProductRepository:
         Retrieves a single product by its primary key.
         """
         return db.query(Product).filter(Product.product_id == product_id).first()
+    
+    def delete_product(self, db: Session, product_id: int) -> bool:
+        """
+        Deletes a product from the database by its ID.
+        """
+        product = db.query(Product).filter(Product.product_id == product_id).first()
+        if product:
+            db.delete(product)
+            db.commit()
+            return True
+        return False

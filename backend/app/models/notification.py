@@ -15,11 +15,12 @@ class Notification(Base):
     prescription_id = Column(Integer, ForeignKey('pharmacy_db.Prescriptions.prescription_id', ondelete='CASCADE'))
     product_id = Column(Integer, ForeignKey('pharmacy_db.Products.product_id', ondelete='CASCADE'))
     message_content = Column(Text, nullable=False)
-    notification_type = Column(Enum('Order Status', 'Prescription Validation', 'Promotion', 'ProductStock Alert', 'System Message', 'Delivery Status'), nullable=False)
+    notification_type = Column(Enum('Order Status', 'Prescription Validation', 'Promotion', 'Product Stock Alert', 'System Message', 'Delivery Status'), nullable=False)
     delivery_id = Column(Integer, ForeignKey('pharmacy_db.Deliveries.delivery_id', ondelete='SET NULL'))
     sent_date = Column(DateTime, default=func.now())
     branch_id = Column(Integer, ForeignKey('pharmacy_db.Branches.branch_id', ondelete='SET NULL'))
     is_sent = Column(Boolean, default=False)
+    
 
     # Relationships
     customer = relationship("Customer", back_populates="notifications")
