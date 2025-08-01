@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+import os
 
 from app.api.customer_routes import router as customer_router
 from app.api.order_routes import router as order_router
@@ -22,19 +23,22 @@ from app.models import *
 # Import hàm tạo bảng từ db.py
 from app.utils.db import create_db_tables
 
-
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, "static")
 
 app = FastAPI(title="Pharmacy Management API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://cos-30043-interface-design.vercel.app"],  
+    allow_origins=[ "http://localhost:5173",
+    "[https://cos-30043-interface-design.vercel.app](https://cos-30043-interface-design.vercel.app)"],  
     allow_credentials=True,
     allow_methods=["*"],  # GET, POST, PUT, DELETE, etc
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 
 
 # Bao gồm các router API

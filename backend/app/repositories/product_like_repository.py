@@ -51,3 +51,18 @@ class ProductLikeRepository:
         Retrieves all like records for a specific customer.
         """
         return db.query(ProductLike).filter(ProductLike.customer_id == customer_id).all()
+    
+    def get_like_counts_for_products(self, db: Session, product_ids: List[int]) -> List[tuple]:
+        """
+        Efficiently counts the total number of likes for a list of product IDs.
+        Returns a list of tuples, e.g., [(product_id, like_count), ...].
+        """
+        if not product_ids:
+            return []
+        
+        return (
+            db.query(ProductLike.product_id, func.count(ProductLike.product_id))
+            .filter(ProductLike.product_id.in_(product_ids))
+            .group_by(ProductLike.product_id)
+            .all()
+        )
