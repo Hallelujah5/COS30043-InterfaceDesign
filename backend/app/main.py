@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
+from fastapi import Request
+from fastapi.responses import RedirectResponse
+
 
 from app.api.customer_routes import router as customer_router
 from app.api.order_routes import router as order_router
@@ -69,3 +72,11 @@ async def startup_event():
 @app.get("/")
 async def root():
     return {"message": "Welcome to Pharmacy Management API"}
+
+
+@app.middleware("http")
+async def enforce_https(request: Request, call_next):
+    if request.url.scheme == "http":
+        https_url = request.url.replace(scheme="https")
+        return RedirectResponse(url=str(https_url))
+    return await call_next(request)
