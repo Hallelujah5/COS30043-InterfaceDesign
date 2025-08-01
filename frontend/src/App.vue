@@ -1,4 +1,3 @@
-<!-- FILE: src/App.vue -->
 
 <template>
   <router-view  />
