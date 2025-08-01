@@ -26,6 +26,7 @@ from app.models import *
 # Import hàm tạo bảng từ db.py
 from app.utils.db import create_db_tables
 
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 
