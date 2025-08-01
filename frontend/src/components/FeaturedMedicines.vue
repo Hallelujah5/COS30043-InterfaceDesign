@@ -110,7 +110,7 @@ export default {
           rating: 4.5,
           inStock: true,
           prescription: false,
-          image_url: "/src/assets/Paracetamol.jpg",
+          image_url: "http://localhost:8000/static/paracetamol.jpg",
         },
         {
           product_id: 2,
@@ -121,7 +121,7 @@ export default {
           rating: 4.8,
           inStock: true,
           prescription: true,
-          image_url: "/src/assets/amoxi.jpg",
+          image_url: "http://localhost:8000/static/amoxicillin.jpg",
         },
         {
           product_id: 3,
@@ -132,7 +132,7 @@ export default {
           rating: 4.6,
           inStock: true,
           prescription: false,
-          image_url: "/src/assets/vitaminC.jpg",
+          image_url: "http://localhost:8000/static/vitaminc.jpg",
         },
         {
           product_id: 6,
@@ -143,7 +143,7 @@ export default {
           rating: 4.4,
           inStock: true,
           prescription: false,
-          image_url: "/src/assets/siro.jpg",
+          image_url: "http://localhost:8000/static/siro.jpg",
         },
       ],
     };
