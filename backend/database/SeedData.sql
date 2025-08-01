@@ -86,36 +86,55 @@ UPDATE `Customers` SET `gender` = 'Male', `dob` = '1990-01-01' WHERE `customer_i
 
 
 -- Thêm dữ liệu vào bảng Products bằng SP_ImportNewProduct (Dồi dào hơn)
--- Thuốc giảm đau, hạ sốt
-CALL `SP_ImportNewProduct`('Paracetamol 500mg', 'Stada', 'Thuốc giảm đau, hạ sốt.', 15000.00, 'Thuốc giảm đau', FALSE, 'http://localhost:8000/static/paracetamol.jpg');
--- ID 2
-CALL `SP_ImportNewProduct`('Ibuprofen 400mg', 'Stellapharm', 'Thuốc chống viêm, giảm đau.', 22000.00, 'Thuốc giảm đau', FALSE, 'http://localhost:8000/static/ibuprofen.jpg');
--- ID 3
-CALL `SP_ImportNewProduct`('Amoxicillin 250mg', 'Domesco', 'Kháng sinh phổ rộng.', 30000.00, 'Kháng sinh', TRUE, 'http://localhost:8000/static/amoxicillin.jpg');
--- ID 4
-CALL `SP_ImportNewProduct`('Vitamin C 1000mg', 'Bayer', 'Bổ sung Vitamin C tăng cường sức đề kháng.', 80000.00, 'Vitamin', FALSE, 'http://localhost:8000/static/vitaminc.jpg');
--- ID 5
-CALL `SP_ImportNewProduct`('Vitamin Tổng Hợp One A Day', 'Bayer', 'Hỗ trợ sức khỏe tổng thể.', 250000.00, 'Vitamin', FALSE, 'http://localhost:8000/static/multivi.jpg');
--- ID 6
-CALL `SP_ImportNewProduct`('Vitamin D3 2000IU', 'Nature Made', 'Bổ sung Vitamin D3.', 450000.00, 'Vitamin', FALSE, 'http://localhost:8000/static/vitamind3.jpg');
--- ID 7
-CALL `SP_ImportNewProduct`('Thuốc nhỏ mắt V.Rohto', 'Rohto-Mentholatum', 'Giúp làm dịu và giảm mỏi mắt.', 45000.00, 'Chăm sóc mắt', FALSE, 'http://localhost:8000/static/vrohto.jpg');
--- ID 8
-CALL `SP_ImportNewProduct`('Khẩu trang y tế 4 lớp', 'Nam Anh', 'Bảo vệ khỏi bụi và vi khuẩn.', 50000.00, 'Vật tư y tế', FALSE, 'http://localhost:8000/static/khautrang.jpg');
--- ID 9
-CALL `SP_ImportNewProduct`('Siro ho Astex', 'OPC', 'Giảm ho, long đờm.', 65000.00, 'Thuốc ho', FALSE, 'http://localhost:8000/static/siro.jpg');
--- ID 10
-CALL `SP_ImportNewProduct`('Fexofenadine 120mg', 'Sanofi', 'Điều trị triệu chứng viêm mũi dị ứng.', 95000.00, 'Thuốc dị ứng', TRUE, 'http://localhost:8000/static/fexo.jpg');
--- ID 11
-CALL `SP_ImportNewProduct`('Omeprazole 20mg', 'Stada', 'Thuốc ức chế bơm proton.', 75000.00, 'Thuốc tiêu hóa', TRUE, 'http://localhost:8000/static/omepraz.jpg');
--- ID 12
-CALL `SP_ImportNewProduct`('Panadol Extra', 'GSK', 'Giảm đau nhanh, hạ sốt hiệu quả.', 18000.00, 'Thuốc giảm đau', FALSE, 'http://localhost:8000/static/panadol_extra.jpg');
--- ID 13
-CALL `SP_ImportNewProduct`('Omega-3 Fish Oil', 'Puritan''s Pride', 'Hỗ trợ sức khỏe tim mạch và não bộ.', 180000.00, 'Thực phẩm chức năng', FALSE, 'http://localhost:8000/static/omega3.jpg');
--- ID 14
-CALL `SP_ImportNewProduct`('Nhiệt kế điện tử', 'Omron', 'Đo nhiệt độ cơ thể.', 150000.00, 'Vật tư y tế', FALSE, 'http://localhost:8000/static/nhietke.jpg');
--- ID 15
-CALL `SP_ImportNewProduct`('Men tiêu hóa Enterogermina', 'Sanofi', 'Hỗ trợ tiêu hóa.', 110000.00, 'Thuốc tiêu hóa', FALSE, 'http://localhost:8000/static/enterogermina.jpg');
+-- -- Thuốc giảm đau, hạ sốt
+-- CALL `SP_ImportNewProduct`('Paracetamol 500mg', 'Stada', 'Thuốc giảm đau, hạ sốt.', 15000.00, 'Thuốc giảm đau', FALSE, 'http://localhost:8000/static/paracetamol.jpg');
+-- -- ID 2
+-- CALL `SP_ImportNewProduct`('Ibuprofen 400mg', 'Stellapharm', 'Thuốc chống viêm, giảm đau.', 22000.00, 'Thuốc giảm đau', FALSE, 'http://localhost:8000/static/ibuprofen.jpg');
+-- -- ID 3
+-- CALL `SP_ImportNewProduct`('Amoxicillin 250mg', 'Domesco', 'Kháng sinh phổ rộng.', 30000.00, 'Kháng sinh', TRUE, 'http://localhost:8000/static/amoxicillin.jpg');
+-- -- ID 4
+-- CALL `SP_ImportNewProduct`('Vitamin C 1000mg', 'Bayer', 'Bổ sung Vitamin C tăng cường sức đề kháng.', 80000.00, 'Vitamin', FALSE, 'http://localhost:8000/static/vitaminc.jpg');
+-- -- ID 5
+-- CALL `SP_ImportNewProduct`('Vitamin Tổng Hợp One A Day', 'Bayer', 'Hỗ trợ sức khỏe tổng thể.', 250000.00, 'Vitamin', FALSE, 'http://localhost:8000/static/multivi.jpg');
+-- -- ID 6
+-- CALL `SP_ImportNewProduct`('Vitamin D3 2000IU', 'Nature Made', 'Bổ sung Vitamin D3.', 450000.00, 'Vitamin', FALSE, 'http://localhost:8000/static/vitamind3.jpg');
+-- -- ID 7
+-- CALL `SP_ImportNewProduct`('Thuốc nhỏ mắt V.Rohto', 'Rohto-Mentholatum', 'Giúp làm dịu và giảm mỏi mắt.', 45000.00, 'Chăm sóc mắt', FALSE, 'http://localhost:8000/static/vrohto.jpg');
+-- -- ID 8
+-- CALL `SP_ImportNewProduct`('Khẩu trang y tế 4 lớp', 'Nam Anh', 'Bảo vệ khỏi bụi và vi khuẩn.', 50000.00, 'Vật tư y tế', FALSE, 'http://localhost:8000/static/khautrang.jpg');
+-- -- ID 9
+-- CALL `SP_ImportNewProduct`('Siro ho Astex', 'OPC', 'Giảm ho, long đờm.', 65000.00, 'Thuốc ho', FALSE, 'http://localhost:8000/static/siro.jpg');
+-- -- ID 10
+-- CALL `SP_ImportNewProduct`('Fexofenadine 120mg', 'Sanofi', 'Điều trị triệu chứng viêm mũi dị ứng.', 95000.00, 'Thuốc dị ứng', TRUE, 'http://localhost:8000/static/fexo.jpg');
+-- -- ID 11
+-- CALL `SP_ImportNewProduct`('Omeprazole 20mg', 'Stada', 'Thuốc ức chế bơm proton.', 75000.00, 'Thuốc tiêu hóa', TRUE, 'http://localhost:8000/static/omepraz.jpg');
+-- -- ID 12
+-- CALL `SP_ImportNewProduct`('Panadol Extra', 'GSK', 'Giảm đau nhanh, hạ sốt hiệu quả.', 18000.00, 'Thuốc giảm đau', FALSE, 'http://localhost:8000/static/panadol_extra.jpg');
+-- -- ID 13
+-- CALL `SP_ImportNewProduct`('Omega-3 Fish Oil', 'Puritan''s Pride', 'Hỗ trợ sức khỏe tim mạch và não bộ.', 180000.00, 'Thực phẩm chức năng', FALSE, 'http://localhost:8000/static/omega3.jpg');
+-- -- ID 14
+-- CALL `SP_ImportNewProduct`('Nhiệt kế điện tử', 'Omron', 'Đo nhiệt độ cơ thể.', 150000.00, 'Vật tư y tế', FALSE, 'http://localhost:8000/static/nhietke.jpg');
+-- -- ID 15
+-- CALL `SP_ImportNewProduct`('Men tiêu hóa Enterogermina', 'Sanofi', 'Hỗ trợ tiêu hóa.', 110000.00, 'Thuốc tiêu hóa', FALSE, 'http://localhost:8000/static/enterogermina.jpg');
+
+
+CALL `SP_ImportNewProduct`('Paracetamol 500mg', 'Stada', 'Thuốc giảm đau, hạ sốt.', 15000.00, 'Thuốc giảm đau', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/paracetamol.jpg');
+CALL `SP_ImportNewProduct`('Ibuprofen 400mg', 'Stellapharm', 'Thuốc chống viêm, giảm đau.', 22000.00, 'Thuốc giảm đau', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/ibuprofen.jpg');
+CALL `SP_ImportNewProduct`('Amoxicillin 250mg', 'Domesco', 'Kháng sinh phổ rộng.', 30000.00, 'Kháng sinh', TRUE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/amoxicillin.jpg');
+CALL `SP_ImportNewProduct`('Vitamin C 1000mg', 'Bayer', 'Bổ sung Vitamin C tăng cường sức đề kháng.', 80000.00, 'Vitamin', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/vitaminc.jpg');
+CALL `SP_ImportNewProduct`('Vitamin Tổng Hợp One A Day', 'Bayer', 'Hỗ trợ sức khỏe tổng thể.', 250000.00, 'Vitamin', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/multivi.jpg');
+CALL `SP_ImportNewProduct`('Vitamin D3 2000IU', 'Nature Made', 'Bổ sung Vitamin D3.', 450000.00, 'Vitamin', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/vitamind3.jpg');
+CALL `SP_ImportNewProduct`('Thuốc nhỏ mắt V.Rohto', 'Rohto-Mentholatum', 'Giúp làm dịu và giảm mỏi mắt.', 45000.00, 'Chăm sóc mắt', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/vrohto.jpg');
+CALL `SP_ImportNewProduct`('Khẩu trang y tế 4 lớp', 'Nam Anh', 'Bảo vệ khỏi bụi và vi khuẩn.', 50000.00, 'Vật tư y tế', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/khautrang.jpg');
+CALL `SP_ImportNewProduct`('Siro ho Astex', 'OPC', 'Giảm ho, long đờm.', 65000.00, 'Thuốc ho', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/siro.jpg');
+CALL `SP_ImportNewProduct`('Fexofenadine 120mg', 'Sanofi', 'Điều trị triệu chứng viêm mũi dị ứng.', 95000.00, 'Thuốc dị ứng', TRUE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/fexo.jpg');
+CALL `SP_ImportNewProduct`('Omeprazole 20mg', 'Stada', 'Thuốc ức chế bơm proton.', 75000.00, 'Thuốc tiêu hóa', TRUE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/omepraz.jpg');
+CALL `SP_ImportNewProduct`('Panadol Extra', 'GSK', 'Giảm đau nhanh, hạ sốt hiệu quả.', 18000.00, 'Thuốc giảm đau', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/panadol_extra.jpg');
+CALL `SP_ImportNewProduct`('Omega-3 Fish Oil', 'Puritan''s Pride', 'Hỗ trợ sức khỏe tim mạch và não bộ.', 180000.00, 'Thực phẩm chức năng', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/omega3.jpg');
+CALL `SP_ImportNewProduct`('Nhiệt kế điện tử', 'Omron', 'Đo nhiệt độ cơ thể.', 150000.00, 'Vật tư y tế', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/nhietke.jpg');
+CALL `SP_ImportNewProduct`('Men tiêu hóa Enterogermina', 'Sanofi', 'Hỗ trợ tiêu hóa.', 110000.00, 'Thuốc tiêu hóa', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/enterogermina.jpg');
+
+
 
 
 -- Thêm dữ liệu tồn kho cho các chi nhánh (chỉ cho 15 sản phẩm đã giữ lại)
