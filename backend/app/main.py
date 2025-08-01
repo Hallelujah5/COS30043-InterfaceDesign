@@ -28,12 +28,15 @@ STATIC_DIR = os.path.join(BASE_DIR, "static")
 
 app = FastAPI(title="Pharmacy Management API")
 
+origins = [
+    "*" # For the live Vercel deployment
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[ "http://localhost:5173",
-    "[https://cos-30043-interface-design.vercel.app]"],  
+    allow_origins=origins, 
     allow_credentials=True,
-    allow_methods=["*"],  # GET, POST, PUT, DELETE, etc
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 

@@ -1,5 +1,3 @@
-<!-- FILE: src/pages/Medicines.vue -->
-<!-- This is the complete, updated Vue component file for the frontend. -->
 <template>
   <div class="bg-light min-vh-100">
     <Navbar />
