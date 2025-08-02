@@ -131,7 +131,7 @@ export default {
           this.$router.push('/login');
           return;
         }
-        const { id: customerId } = JSON.parse(userData);
+        const { user_id: customerId } = JSON.parse(userData);
         const res = await api.get(`/customers/${customerId}/orders`);
         const rawOrders = res.data;
 

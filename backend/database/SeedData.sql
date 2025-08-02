@@ -1,22 +1,22 @@
 -- SeedData.sql
--- Contains sample data to populate the pharmacy_db database
--- Always prioritize using Stored Procedures to insert data when possible.
+-- Contains sample data to populate the pharmacy_db database.
+-- It's always best to use Stored Procedures to insert data whenever possible.
 
 -- USE `pharmacy_db`;
 
--- Insert data into Branches table
+-- Add data to the Branches table
 INSERT INTO `Branches` (`name`, `address`, `phone_number`) VALUES
-('Central Branch', '123 Nguyen Hue Street, District 1, Ho Chi Minh City', '0281112222'),
-('Go Vap Branch', '456 Quang Trung Street, Go Vap District, Ho Chi Minh City', '0283334444'),
-('Thu Duc Branch', '789 Vo Van Ngan Street, Thu Duc City, Ho Chi Minh City', '0285556666'),
-('District 7 Branch', '101 Nguyen Thi Thap Street, District 7, Ho Chi Minh City', '0287778888'),
-('Binh Thanh Branch', '20 Phan Dang Luu Street, Binh Thanh District, Ho Chi Minh City', '0289990000');
+('Central Branch', '123 Nguyen Hue Street, District 1, HCMC', '0281112222'),
+('Go Vap Branch', '456 Quang Trung Street, Go Vap District, HCMC', '0283334444'),
+('Thu Duc Branch', '789 Vo Van Ngan Street, Thu Duc City, HCMC', '0285556666'),
+('District 7 Branch', '101 Nguyen Thi Thap, District 7, HCMC', '0287778888'),
+('Binh Thanh Branch', '20 Phan Dang Luu, Binh Thanh District, HCMC', '0289990000');
 
--- Insert data into Staff using SP_RegisterNewStaff
--- Note: Passwords here are plain text; in a real application they should be hashed before calling SP.
--- Assume branch_id: 1=Central, 2=Go Vap, 3=Thu Duc, 4=District 7, 5=Binh Thanh
+-- Add data to the Staff table using SP_RegisterNewStaff
+-- Note: Passwords here are in plain text. In a real application, they would be hashed before calling the SP.
+-- Assuming branch_id: 1=Central, 2=Go Vap, 3=Thu Duc, 4=District 7, 5=Binh Thanh
 
--- Branch 1: Central (1 BM, 3 Cashier, 3 Pharmacist, 3 Warehouse)
+-- Branch 1: Central (1 BM, 3 Cashiers, 3 Pharmacists, 3 Warehouse Staff)
 CALL `SP_RegisterNewStaff`('Nguyen', 'Lan Anh', 'lananh.bm@pharmacy.com', '0901234567', 'passlananh', 'BranchManager', 1, 'https://example.com/staff/lananh.jpg');
 CALL `SP_RegisterNewStaff`('Tran', 'Minh', 'minh.pharma@pharmacy.com', '0907654321', 'passminh', 'Pharmacist', 1, 'https://example.com/staff/minh.jpg');
 CALL `SP_RegisterNewStaff`('Le', 'Thi Mai', 'mai.cashier@pharmacy.com', '0912345678', 'passmai', 'Cashier', 1, 'https://example.com/staff/mai.jpg');
@@ -28,7 +28,7 @@ CALL `SP_RegisterNewStaff`('Hoang', 'Van Duc', 'duc.warehouse@pharmacy.com', '09
 CALL `SP_RegisterNewStaff`('Ly', 'Thi Kim', 'kim.pharma@pharmacy.com', '0923210987', 'passkim', 'Pharmacist', 1, 'https://example.com/staff/kim.jpg');
 CALL `SP_RegisterNewStaff`('Truong', 'Van Long', 'long.warehouse@pharmacy.com', '0924321098', 'passlong', 'WarehouseStaff', 1, 'https://example.com/staff/long.jpg');
 
--- Branch 2: Go Vap (1 BM, 3 Cashier, 3 Pharmacist, 3 Warehouse)
+-- Branch 2: Go Vap (1 BM, 3 Cashiers, 3 Pharmacists, 3 Warehouse Staff)
 CALL `SP_RegisterNewStaff`('Hoang', 'Thi Yen', 'yen.bm@pharmacy.com', '0934567890', 'passyen', 'BranchManager', 2, 'https://example.com/staff/yen.jpg');
 CALL `SP_RegisterNewStaff`('Vo', 'Thi Thu', 'thu.cashier@pharmacy.com', '0919998888', 'passthucash', 'Cashier', 2, 'https://example.com/staff/thu.jpg');
 CALL `SP_RegisterNewStaff`('Phan', 'Van Nam', 'nam.pharma@pharmacy.com', '0935678901', 'passnam', 'Pharmacist', 2, 'https://example.com/staff/nam.jpg');
@@ -40,7 +40,7 @@ CALL `SP_RegisterNewStaff`('Luu', 'Thi Nga', 'nga.warehouse@pharmacy.com', '0940
 CALL `SP_RegisterNewStaff`('Cao', 'Van Phuc', 'phuc.pharma@pharmacy.com', '0941234567', 'passphuc', 'Pharmacist', 2, 'https://example.com/staff/phuc.jpg');
 CALL `SP_RegisterNewStaff`('Ma', 'Thi Oanh', 'oanh.warehouse@pharmacy.com', '0942345678', 'passoanh', 'WarehouseStaff', 2, 'https://example.com/staff/oanh.jpg');
 
--- Branch 3: Thu Duc (1 BM, 3 Cashier, 3 Pharmacist, 3 Warehouse)
+-- Branch 3: Thu Duc (1 BM, 3 Cashiers, 3 Pharmacists, 3 Warehouse Staff)
 CALL `SP_RegisterNewStaff`('Dang', 'Quoc Bao', 'bao.bm@pharmacy.com', '0987654321', 'passbao', 'BranchManager', 3, 'https://example.com/staff/bao.jpg');
 CALL `SP_RegisterNewStaff`('Dinh', 'Van Chung', 'chung.warehouse@pharmacy.com', '0945678901', 'passchung', 'WarehouseStaff', 3, 'https://example.com/staff/chung.jpg');
 CALL `SP_RegisterNewStaff`('Le', 'Thi Thuy', 'thuy.cashier@pharmacy.com', '0946789012', 'passthuy', 'Cashier', 3, 'https://example.com/staff/thuy.jpg');
@@ -52,7 +52,7 @@ CALL `SP_RegisterNewStaff`('Vo', 'Van Khoi', 'khoi.cashier@pharmacy.com', '09512
 CALL `SP_RegisterNewStaff`('Ly', 'Thi Dieu', 'dieu.warehouse@pharmacy.com', '0952345678', 'passdieu', 'WarehouseStaff', 3, 'https://example.com/staff/dieu.jpg');
 CALL `SP_RegisterNewStaff`('Bui', 'Van Hieu', 'hieu.pharma@pharmacy.com', '0953456789', 'passhieu', 'Pharmacist', 3, 'https://example.com/staff/hieu.jpg');
 
--- Branch 4: District 7 (1 BM, 3 Cashier, 3 Pharmacist, 3 Warehouse)
+-- Branch 4: District 7 (1 BM, 3 Cashiers, 3 Pharmacists, 3 Warehouse Staff)
 CALL `SP_RegisterNewStaff`('Ngo', 'Thanh Tuyen', 'tuyen.bm@pharmacy.com', '0967890123', 'passtuyen', 'BranchManager', 4, 'https://example.com/staff/tuyen.jpg');
 CALL `SP_RegisterNewStaff`('Trinh', 'Dinh Tu', 'tu.cashier@pharmacy.com', '0978901234', 'passtucash', 'Cashier', 4, 'https://example.com/staff/tu.jpg');
 CALL `SP_RegisterNewStaff`('Do', 'Thi Nhung', 'nhung.pharma@pharmacy.com', '0954567890', 'passnhung', 'Pharmacist', 4, 'https://example.com/staff/nhung.jpg');
@@ -64,7 +64,7 @@ CALL `SP_RegisterNewStaff`('Hoang', 'Van Thang', 'thang.warehouse@pharmacy.com',
 CALL `SP_RegisterNewStaff`('Vo', 'Thi Mai', 'mai2.pharma@pharmacy.com', '0960123456', 'passmai2', 'Pharmacist', 4, 'https://example.com/staff/mai2.jpg');
 CALL `SP_RegisterNewStaff`('Ly', 'Van Dung', 'dung.warehouse@pharmacy.com', '0961234567', 'passdung', 'WarehouseStaff', 4, 'https://example.com/staff/dung.jpg');
 
--- Branch 5: Binh Thanh (1 BM, 3 Cashier, 3 Pharmacist, 3 Warehouse)
+-- Branch 5: Binh Thanh (1 BM, 3 Cashiers, 3 Pharmacists, 3 Warehouse Staff)
 CALL `SP_RegisterNewStaff`('Bui', 'Minh Phuong', 'phuong.bm@pharmacy.com', '0989012345', 'passphuong', 'BranchManager', 5, 'https://example.com/staff/phuong.jpg');
 CALL `SP_RegisterNewStaff`('Truong', 'Thi An', 'an.cashier@pharmacy.com', '0962345678', 'passan', 'Cashier', 5, 'https://example.com/staff/an.jpg');
 CALL `SP_RegisterNewStaff`('Dang', 'Van Thong', 'thong.pharma@pharmacy.com', '0963456789', 'passthong', 'Pharmacist', 5, 'https://example.com/staff/thong.jpg');
@@ -76,14 +76,16 @@ CALL `SP_RegisterNewStaff`('Ta', 'Van Minh', 'minh2.warehouse@pharmacy.com', '09
 CALL `SP_RegisterNewStaff`('Duong', 'Thi Thu', 'thu2.pharma@pharmacy.com', '0969012345', 'passthu2', 'Pharmacist', 5, 'https://example.com/staff/thu2.jpg');
 CALL `SP_RegisterNewStaff`('Dinh', 'Van Lam', 'lam.warehouse@pharmacy.com', '0970123456', 'passlam', 'WarehouseStaff', 5, 'https://example.com/staff/lam.jpg');
 
--- Insert data into Customers using SP_RegisterNewCustomer
--- Create only 1 representative customer for in-store purchases
-CALL `SP_RegisterNewCustomer`('Instore', 'Purchase', 'instore@pharmacy.com', '0987123456', 'In-store purchase', 'instore123', 'https://example.com/customer/instore.jpg');
+
+-- Add data to the Customers table using SP_RegisterNewCustomer
+-- Create one customer to represent over-the-counter purchases
+CALL `SP_RegisterNewCustomer`('In-store', 'Customer', 'instore.customer@pharmacy.com', '0000000000', 'Over the counter', 'instore123', 'https://example.com/customer/instore.jpg');
 
 -- Update customer information
 UPDATE `Customers` SET `gender` = 'Male', `dob` = '1990-01-01' WHERE `customer_id` = 1;
 
--- Insert data into Products using SP_ImportNewProduct
+
+-- Add data to the Products table using SP_ImportNewProduct (More comprehensive)
 CALL `SP_ImportNewProduct`('Paracetamol 500mg', 'Stada', 'Pain relief and fever reduction.', 15000.00, 'Pain Relief', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/Paracetamol.jpg');
 CALL `SP_ImportNewProduct`('Ibuprofen 400mg', 'Stellapharm', 'Anti-inflammatory and pain relief.', 22000.00, 'Pain Relief', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/ibuprofen.jpg');
 CALL `SP_ImportNewProduct`('Amoxicillin 250mg', 'Domesco', 'Broad-spectrum antibiotic.', 30000.00, 'Antibiotic', TRUE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/amoxicillin.jpg');
@@ -97,4 +99,26 @@ CALL `SP_ImportNewProduct`('Fexofenadine 120mg', 'Sanofi', 'Treats allergic rhin
 CALL `SP_ImportNewProduct`('Omeprazole 20mg', 'Stada', 'Proton pump inhibitor.', 75000.00, 'Digestive Medicine', TRUE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/omepraz.jpg');
 CALL `SP_ImportNewProduct`('Panadol Extra', 'GSK', 'Fast pain relief and fever reduction.', 18000.00, 'Pain Relief', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/panadol_extra.jpg');
 CALL `SP_ImportNewProduct`('Omega-3 Fish Oil', 'Puritan''s Pride', 'Supports heart and brain health.', 180000.00, 'Supplements', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/omega3.jpg');
-CALL `SP_ImportNewProduct`('Digital Thermometer', 'Omron', 'Measures body temperature.', 150000.
+CALL `SP_ImportNewProduct`('Digital Thermometer', 'Omron', 'Measures body temperature.', 150000.00, 'Medical Supplies', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/nhietke.jpg');
+CALL `SP_ImportNewProduct`('Enterogermina Digestive Enzyme', 'Sanofi', 'Supports digestion.', 110000.00, 'Digestive Medicine', FALSE, 'https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/enterogermina.jpg');
+
+
+
+-- Add stock data for branches (only for the 15 retained products)
+-- Branch 1: Central Branch
+INSERT INTO `ProductStock` (`branch_id`, `product_id`, `stock_quantity`, `min_stock_level`) VALUES
+(1, 1, 150, 30), (1, 2, 60, 15), (1, 3, 30, 8), (1, 4, 200, 50), (1, 5, 70, 15),
+(1, 6, 120, 25), (1, 7, 75, 15), (1, 8, 85, 18), (1, 9, 140, 30), (1, 10, 25, 5),
+(1, 11, 75, 15), (1, 12, 120, 25), (1, 13, 90, 20), (1, 14, 95, 20), (1, 15, 110, 25);
+
+-- Branch 2: Go Vap Branch
+INSERT INTO `ProductStock` (`branch_id`, `product_id`, `stock_quantity`, `min_stock_level`) VALUES
+(2, 1, 100, 25), (2, 2, 45, 10), (2, 3, 20, 5), (2, 4, 150, 40), (2, 5, 50, 12),
+(2, 6, 90, 20), (2, 7, 55, 12), (2, 8, 65, 15), (2, 9, 110, 24), (2, 10, 20, 4),
+(2, 11, 60, 13), (2, 12, 90, 20), (2, 13, 70, 15), (2, 14, 75, 16), (2, 15, 85, 18);
+
+-- Branch 3: Thu Duc Branch
+INSERT INTO `ProductStock` (`branch_id`, `product_id`, `stock_quantity`, `min_stock_level`) VALUES
+(3, 1, 120, 28), (3, 2, 50, 12), (3, 3, 25, 6), (3, 4, 170, 38), (3, 5, 60, 14),
+(3, 6, 100, 22), (3, 7, 65, 14), (3, 8, 75, 17), (3, 9, 120, 26), (3, 10, 22, 5),
+(3, 11, 70, 16), (3, 12, 100, 22), (3, 13, 80, 18), (3, 14, 85, 19), (3, 15, 95, 21);

@@ -54,9 +54,10 @@ class ProductService:
         if not product:
             raise ValueError(f"Product with ID {product_id} not found.")
 
-        # Similar to get_all_products, we enrich the single product
+        # Enrich the single product with its like count
         like_count = self.like_repo.get_like_count_for_product(db, product.product_id)
-        product_schema = ProductSchema.from_orm(product)
+        
+        product_schema = ProductSchema.model_validate(product)
         product_schema.like_count = like_count
         
         return product_schema
