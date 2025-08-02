@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 from fastapi import Request
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 
 
 from app.api.customer_routes import router as customer_router
@@ -26,7 +27,6 @@ from app.models import *
 # Import hàm tạo bảng từ db.py
 from app.utils.db import create_db_tables
 
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 
@@ -45,6 +45,7 @@ app.add_middleware(
 )
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+app.add_middleware(HTTPSRedirectMiddleware)
 
 
 
