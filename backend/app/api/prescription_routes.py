@@ -8,9 +8,9 @@ from app.schemas.prescription import (
     ValidatePrescriptionRequest, ValidatePrescriptionResponse,
     GetPendingPrescriptionsResponse,
     AssignPharmacistRequest, AssignPharmacistResponse,
-    PrescriptionSummary, # Giữ lại nếu bạn vẫn dùng ở đâu đó
-    GetPharmacistPendingPrescriptionsResponse, # Import schema mới
-    PharmacistPrescriptionSummary # Import schema mới
+    PrescriptionSummary,  # Giữ lại nếu bạn vẫn dùng ở đâu đó
+    GetPharmacistPendingPrescriptionsResponse,  # Import schema mới
+    PharmacistPrescriptionSummary  # Import schema mới
 )
 from typing import List
 
@@ -56,7 +56,7 @@ async def upload_prescription(
 
 @router.put("/{prescriptionId}/validate", response_model=ValidatePrescriptionResponse, status_code=status.HTTP_200_OK)
 async def validate_prescription(
-    prescription_id: int = Path(..., alias="prescriptionId", description="ID của đơn thuốc cần xác nhận/từ chối"),
+    prescription_id: int = Path(..., alias="prescriptionId", description="Prescription's ID that needs Approval/Reject"),
     request: ValidatePrescriptionRequest = Body(...),
     prescription_service: PrescriptionService = Depends(get_prescription_service)
 ):
@@ -101,7 +101,7 @@ async def get_all_pending_prescriptions(
 
 @router.get("/pharmacist/{pharmacistId}/pending-review", response_model=GetPharmacistPendingPrescriptionsResponse, status_code=status.HTTP_200_OK)
 async def get_pharmacist_pending_prescriptions(
-    pharmacist_id: int = Path(..., alias="pharmacistId", description="ID của dược sĩ để lấy đơn thuốc đang chờ xử lý"),
+    pharmacist_id: int = Path(..., alias="pharmacistId", description="ID of the pharmacist to retrieve pending prescriptions"),
     prescription_service: PrescriptionService = Depends(get_prescription_service)
 ):
     """
@@ -118,7 +118,7 @@ async def get_pharmacist_pending_prescriptions(
 
 @router.put("/{prescriptionId}/assign-pharmacist", response_model=AssignPharmacistResponse, status_code=status.HTTP_200_OK)
 async def assign_pharmacist(
-    prescription_id: int = Path(..., alias="prescriptionId", description="ID của đơn thuốc cần gán"),
+    prescription_id: int = Path(..., alias="prescriptionId", description="ID of the prescription to assign"),
     request: AssignPharmacistRequest = Body(...),
     prescription_service: PrescriptionService = Depends(get_prescription_service)
 ):

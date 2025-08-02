@@ -16,7 +16,7 @@ CREATE TABLE `Staff` (
     `last_name` VARCHAR(100) NOT NULL,
     `email` VARCHAR(255) NOT NULL UNIQUE,
     `phone_number` VARCHAR(20),
-    `image_url` VARCHAR(255), 
+    `image_url` VARCHAR(255),
     `password_hash` VARCHAR(255) NOT NULL,
     `role` ENUM('Pharmacist', 'Cashier', 'BranchManager', 'WarehouseStaff') NOT NULL,
     `is_active` BOOLEAN DEFAULT TRUE,
@@ -36,7 +36,7 @@ CREATE TABLE `Customers` (
     `phone_number` VARCHAR(20),
     `address` VARCHAR(255),
     `image_url` VARCHAR(255),
-    `registration_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    `registration_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `is_active` BOOLEAN DEFAULT TRUE,
     `password_hash` VARCHAR(255) NOT NULL,
     `has_prescription` BOOLEAN DEFAULT FALSE
@@ -63,7 +63,7 @@ CREATE TABLE `ProductStock` (
     `product_id` INT NOT NULL,
     `stock_quantity` INT DEFAULT 0 CHECK (`stock_quantity` >= 0), -- Tồn kho không thể âm
     `min_stock_level` INT DEFAULT 10 CHECK (`min_stock_level` >= 0), -- Ngưỡng tồn kho tối thiểu
-    `last_updated` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `last_updated` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`branch_id`, `product_id`),
     FOREIGN KEY (`branch_id`) REFERENCES `Branches`(`branch_id`) ON DELETE CASCADE,
     FOREIGN KEY (`product_id`) REFERENCES `Products`(`product_id`) ON DELETE CASCADE
@@ -74,11 +74,11 @@ CREATE TABLE `ProductStock` (
 CREATE TABLE `Prescriptions` (
     `prescription_id` INT AUTO_INCREMENT PRIMARY KEY,
     `customer_id` INT NOT NULL,
-    `upload_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    `upload_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `file_path` VARCHAR(255),
     `validation_status` ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',
     `pharmacist_id` INT, -- Dược sĩ đã xác nhận đơn thuốc này HOẶC được gán để xác nhận
-    `validation_date` TIMESTAMP ,
+    `validation_date` TIMESTAMP,
     `customer_notes` TEXT,
     `pharmacist_notes` TEXT,
     FOREIGN KEY (`customer_id`) REFERENCES `Customers`(`customer_id`) ON DELETE CASCADE,
@@ -92,7 +92,7 @@ CREATE TABLE `Deliveries` (
     `delivery_address` VARCHAR(255) NOT NULL,
     `delivery_status` ENUM('Scheduled', 'On The Way', 'Delivered', 'Cancelled') DEFAULT 'Scheduled',
     `delivery_party` ENUM('Shopee', 'Grab', 'Be', 'XanhSM'),
-    `estimated_delivery_date` TIMESTAMP ,
+    `estimated_delivery_date` TIMESTAMP,
     `tracking_number` VARCHAR(100)
 );
 
@@ -102,7 +102,7 @@ CREATE TABLE `Orders` (
     `order_id` INT AUTO_INCREMENT PRIMARY KEY,
     `customer_id` INT NOT NULL,
     `branch_id` INT NOT NULL, -- Chi nhánh mà đơn hàng được thực hiện
-    `order_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    `order_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `total_amount` DECIMAL(10, 2) DEFAULT 0.00, -- Sẽ được cập nhật bởi trigger/procedure
     `order_status` ENUM('Pending', 'Paid', 'Processing', 'Ready for Pickup', 'Delivered', 'Cancelled', 'Rejected-Refund') DEFAULT 'Pending',
     `prescription_id` INT UNIQUE, -- Một đơn hàng có thể có tối đa một đơn thuốc
@@ -134,7 +134,7 @@ CREATE TABLE `OrderItems` (
 CREATE TABLE `Payments` (
     `payment_id` INT AUTO_INCREMENT PRIMARY KEY,
     `order_id` INT NOT NULL UNIQUE, -- Mối quan hệ một-một với Order
-    `payment_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    `payment_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `amount` DECIMAL(10, 2) NOT NULL,
     `payment_method` ENUM('Cash', 'Credit Card', 'Debit Card', 'E-Wallet') NOT NULL,
     `transaction_status` ENUM('Pending', 'Completed', 'Failed', 'Refunded') DEFAULT 'Pending',
@@ -146,7 +146,7 @@ CREATE TABLE `Payments` (
 CREATE TABLE `Receipts` (
     `receipt_id` INT AUTO_INCREMENT PRIMARY KEY,
     `payment_id` INT NOT NULL UNIQUE, -- Mối quan hệ một-một với Payment
-    `receipt_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    `receipt_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `receipt_details` TEXT, -- Có thể là chuỗi của các chi tiết liên quan ví dụ 10 x Apple : 100$
     FOREIGN KEY (`payment_id`) REFERENCES `Payments`(`payment_id`) ON DELETE CASCADE
 );
@@ -163,7 +163,7 @@ CREATE TABLE `Notifications` (
     `message_content` TEXT NOT NULL,
     `notification_type` ENUM('Order Status', 'Prescription Validation', 'Promotion', 'Product Stock Alert', 'System Message', 'Delivery Status') NOT NULL,
     `delivery_id` INT,
-    `sent_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    `sent_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `branch_id` INT,
     `is_sent` BOOLEAN DEFAULT FALSE, -- Thêm cột này nhằm kiểm soát tin đã được gửi chưa (phục vụ third party)
     FOREIGN KEY (`customer_id`) REFERENCES `Customers`(`customer_id`) ON DELETE CASCADE,
@@ -180,7 +180,7 @@ CREATE TABLE `Notifications` (
 CREATE TABLE `ProductLikes` (
     `customer_id` INT NOT NULL,
     `product_id` INT NOT NULL,
-    `liked_date` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+    `liked_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`customer_id`, `product_id`), -- Khóa chính tổng hợp ngăn chặn một khách hàng thích sản phẩm nhiều lần
     FOREIGN KEY (`customer_id`) REFERENCES `Customers`(`customer_id`) ON DELETE CASCADE,
     FOREIGN KEY (`product_id`) REFERENCES `Products`(`product_id`) ON DELETE CASCADE
@@ -211,7 +211,7 @@ AFTER UPDATE ON `OrderItems`
 FOR EACH ROW
 BEGIN
     -- Chỉ điều chỉnh nếu số lượng thay đổi
-    IF OLD.quantity <> NEW.quantity THEN    
+    IF OLD.quantity <> NEW.quantity THEN
         UPDATE `ProductStock`
         SET `stock_quantity` = `stock_quantity` + OLD.quantity - NEW.quantity
         WHERE `branch_id` = (SELECT `branch_id` FROM `Orders` WHERE `order_id` = NEW.order_id)
@@ -285,7 +285,7 @@ BEGIN
         VALUES (
             NEW.customer_id,
             NEW.prescription_id,
-            CONCAT('Đơn thuốc của bạn đã được ', CASE WHEN NEW.validation_status = 'Approved' THEN 'duyệt' ELSE 'từ chối' END, '. Ghi chú của dược sĩ: ', COALESCE(NEW.pharmacist_notes, 'Không có.')),
+            CONCAT('Your prescription has been ', CASE WHEN NEW.validation_status = 'Approved' THEN 'approved' ELSE 'rejected' END, '. Pharmacist notes: ', COALESCE(NEW.pharmacist_notes, 'None.')),
             'Prescription Validation'
         );
     END IF;
@@ -304,7 +304,7 @@ BEGIN
         INSERT INTO `Receipts` (`payment_id`, `receipt_details`)
         VALUES (
             NEW.payment_id,
-            CONCAT('Biên lai cho Đơn hàng ID: ', NEW.order_id, ', Số tiền: ', NEW.amount, ', Phương thức: ', NEW.payment_method)
+            CONCAT('Receipt for Order ID: ', NEW.order_id, ', Amount: ', NEW.amount, ', Method: ', NEW.payment_method)
         );
         -- Cập nhật trạng thái đơn hàng
         -- Ban đầu đặt là 'Paid', SP_AssignOrderToCashier sẽ chuyển sang 'Processing'
@@ -314,7 +314,7 @@ BEGIN
 
         -- Gửi thông báo cho khách hàng về việc thanh toán thành công
         INSERT INTO `Notifications` (`customer_id`, `order_id`, `message_content`, `notification_type`)
-        SELECT `customer_id`, NEW.order_id, CONCAT('Đơn hàng ID: ', NEW.order_id, ' đã được thanh toán thành công. Tổng tiền: ', NEW.amount), 'Order Status'
+        SELECT `customer_id`, NEW.order_id, CONCAT('Order ID: ', NEW.order_id, ' has been paid successfully. Total amount: ', NEW.amount), 'Order Status'
         FROM `Orders` WHERE `order_id` = NEW.order_id;
 
         -- Gửi thông báo cho BranchManager về đơn hàng đã thanh toán
@@ -322,7 +322,7 @@ BEGIN
         SELECT
             S.staff_id,
             O.order_id,
-            CONCAT('Đơn hàng ID: ', O.order_id, ' (khách hàng ID: ', O.customer_id, ') đã được thanh toán. Cần phân công thu ngân kiểm tra.'),
+            CONCAT('Order ID: ', O.order_id, ' (customer ID: ', O.customer_id, ') has been paid. Needs cashier assignment for checking.'),
             'Order Status',
             O.branch_id
         FROM `Orders` O
@@ -344,7 +344,7 @@ BEGIN
         VALUES (
             NEW.customer_id,
             NEW.order_id,
-            CONCAT('Trạng thái đơn hàng ID: ', NEW.order_id, ' của bạn đã thay đổi thành: ', NEW.order_status),
+            CONCAT('The status of your order ID: ', NEW.order_id, ' has changed to: ', NEW.order_status),
             'Order Status'
         );
     END IF;
@@ -363,7 +363,7 @@ BEGIN
         SELECT
             O.customer_id,
             NEW.delivery_id,
-            CONCAT('Trạng thái giao hàng cho đơn hàng ID: ', O.order_id, ' đã thay đổi thành: ', NEW.delivery_status),
+            CONCAT('The delivery status for order ID: ', O.order_id, ' has changed to: ', NEW.delivery_status),
             'Delivery Status'
         FROM `Orders` O
         WHERE O.delivery_id = NEW.delivery_id;
@@ -385,7 +385,7 @@ BEGIN
         SELECT
             S.staff_id,
             NEW.prescription_id,
-            CONCAT('Có đơn thuốc mới ID: ', NEW.prescription_id, ' từ khách hàng ID: ', NEW.customer_id, ' cần được phân công xác nhận.'),
+            CONCAT('New prescription ID: ', NEW.prescription_id, ' from customer ID: ', NEW.customer_id, ' needs to be assigned for validation.'),
             'Prescription Validation'
         FROM `Staff` S
         WHERE S.role = 'BranchManager' AND S.is_active = TRUE;
@@ -406,7 +406,7 @@ BEGIN
         VALUES (
             NEW.pharmacist_id,
             NEW.prescription_id,
-            CONCAT('Bạn đã được gán đơn thuốc ID: ', NEW.prescription_id, ' cần xác nhận.'),
+            CONCAT('You have been assigned prescription ID: ', NEW.prescription_id, ' for validation.'),
             'Prescription Validation'
         );
     END IF;
@@ -426,7 +426,7 @@ BEGIN
         VALUES (
             NEW.cashier_id,
             NEW.order_id,
-            CONCAT('Bạn đã được gán đơn hàng ID: ', NEW.order_id, ' cần kiểm tra cuối cùng và hoàn tất.'),
+            CONCAT('You have been assigned order ID: ', NEW.order_id, ' for final check and completion.'),
             'Order Status'
         );
     END IF;
@@ -447,7 +447,7 @@ BEGIN
             S.staff_id,
             NEW.branch_id,
             NEW.product_id,
-            CONCAT('Sản phẩm "', P.name, '" (ID: ', NEW.product_id, ') tại chi nhánh ID: ', NEW.branch_id, ' đang dưới mức tồn kho tối thiểu. Tồn kho hiện tại: ', NEW.stock_quantity),
+            CONCAT('Product "', P.name, '" (ID: ', NEW.product_id, ') at branch ID: ', NEW.branch_id, ' is below the minimum stock level. Current stock: ', NEW.stock_quantity),
             'Product Stock Alert'
         FROM `Staff` S
         LEFT JOIN `Products` P ON NEW.product_id = P.product_id
@@ -471,7 +471,7 @@ CREATE PROCEDURE `SP_PlaceOrder`(
     IN p_prescription_id INT,
     IN p_delivery_address VARCHAR(255),
     IN p_delivery_party ENUM('Shopee', 'Grab', 'Be', 'XanhSM'),
-    IN p_estimated_delivery_date TIMESTAMP ,
+    IN p_estimated_delivery_date TIMESTAMP,
     IN p_tracking_number VARCHAR(100),
     IN p_discount_amount DECIMAL(10,2),
     IN p_order_source ENUM('In-store', 'Online')
@@ -518,7 +518,7 @@ BEGIN
         IF @current_stock IS NULL OR @current_stock < v_quantity THEN
             -- Rollback và báo lỗi nếu không đủ tồn kho
             ROLLBACK;
-            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Không đủ sản phẩm trong kho hoặc sản phẩm không tồn tại tại chi nhánh này.';
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Not enough product in stock or the product does not exist at this branch.';
         END IF;
 
         INSERT INTO `OrderItems` (`order_id`, `product_id`, `quantity`, `unit_price`)
@@ -570,7 +570,7 @@ BEGIN
     SELECT `total_amount` INTO v_total_amount FROM `Orders` WHERE `order_id` = p_order_id;
 
     IF v_total_amount IS NULL THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Không tìm thấy đơn hàng.';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Order not found.';
     ELSE
         -- Tìm payment_id liên quan đến order_id này
         SELECT `payment_id` INTO v_payment_id FROM `Payments` WHERE `order_id` = p_order_id;
@@ -653,7 +653,7 @@ BEGIN
         S.staff_id,
         p_branch_id,
         p_product_id,
-        CONCAT('Đã thêm thành công sản phẩm "', v_product_name, '" (ID: ', p_product_id, ') vào tồn kho của chi nhánh ID: ', p_branch_id, '. Số lượng thêm là: ', p_quantity_to_add, '.'),
+        CONCAT('Successfully added product "', v_product_name, '" (ID: ', p_product_id, ') to the stock of branch ID: ', p_branch_id, '. Quantity added: ', p_quantity_to_add, '.'),
         'Product Stock Alert' -- Có thể tạo một loại 'Restock Confirmation' nếu muốn tách biệt
     FROM `Staff` S
     WHERE S.role = 'WarehouseStaff'
@@ -667,8 +667,8 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE `SP_GenerateSalesReport`(
     IN p_branch_id INT,
-    IN p_start_date TIMESTAMP ,
-    IN p_end_date TIMESTAMP 
+    IN p_start_date TIMESTAMP,
+    IN p_end_date TIMESTAMP
 )
 BEGIN
     SELECT
@@ -718,7 +718,7 @@ BEGIN
     INSERT INTO `Notifications` (`staff_id`, `message_content`, `notification_type`, `branch_id`)
     VALUES (
         v_new_staff_id,
-        CONCAT('Tài khoản nhân viên của bạn đã được tạo với vai trò ', p_role, '.'),
+        CONCAT('Your staff account has been created with the role ', p_role, '.'),
         'System Message',
         p_branch_id
     );
@@ -750,7 +750,7 @@ BEGIN
     INSERT INTO `Notifications` (`customer_id`, `message_content`, `notification_type`)
     VALUES (
         v_new_customer_id,
-        'Tài khoản khách hàng của bạn đã được tạo thành công.',
+        'Your customer account has been created successfully.',
         'System Message'
     );
 END //
@@ -782,7 +782,7 @@ BEGIN
     SELECT
         S.staff_id,
         v_new_product_id,
-        CONCAT('Sản phẩm mới "', p_name, '" (ID: ', v_new_product_id, ') đã được nhập vào hệ thống.'),
+        CONCAT('New product "', p_name, '" (ID: ', v_new_product_id, ') has been imported into the system.'),
         'Product Stock Alert'
     FROM `Staff` S
     WHERE S.role = 'WarehouseStaff' AND S.is_active = TRUE;
@@ -828,12 +828,12 @@ BEGIN
         SELECT
             S.staff_id,
             p_product_id,
-            CONCAT('Thông tin sản phẩm "', p_name, '" (ID: ', p_product_id, ') đã được cập nhật.'),
+            CONCAT('Product information for "', p_name, '" (ID: ', p_product_id, ') has been updated.'),
             'Product Stock Alert' -- Hoặc 'System Message' tùy theo mức độ quan trọng
         FROM `Staff` S
         WHERE S.role = 'WarehouseStaff' AND S.is_active = TRUE;
     ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Sản phẩm không tồn tại để cập nhật.';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Product does not exist to be updated.';
     END IF;
 END //
 DELIMITER ;
@@ -894,8 +894,8 @@ BEGIN
         I.min_stock_level, -- Added min_stock_level column
         I.last_updated,
         CASE
-            WHEN I.stock_quantity <= I.min_stock_level THEN 'Dưới ngưỡng'
-            ELSE 'Đủ'
+            WHEN I.stock_quantity <= I.min_stock_level THEN 'Below Threshold'
+            ELSE 'Sufficient'
         END AS stock_status_alert -- Added stock alert column
     FROM
         `ProductStock` I
@@ -957,14 +957,14 @@ BEGIN
         UPDATE `Prescriptions`
         SET
             `pharmacist_id` = p_pharmacist_id,
-            `pharmacist_notes` = CONCAT('Đã được BranchManager (Staff ID: ', p_branch_manager_id, ') gán để xác nhận.')
+            `pharmacist_notes` = CONCAT('Assigned for validation by BranchManager (Staff ID: ', p_branch_manager_id, ').')
         WHERE `prescription_id` = p_prescription_id;
 
         -- Trigger trg_notify_assigned_pharmacist sẽ tự động kích hoạt sau UPDATE
     ELSEIF v_current_status IS NULL THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Không tìm thấy đơn thuốc này.';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'This prescription was not found.';
     ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đơn thuốc này đã được xử lý hoặc không ở trạng thái chờ.';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'This prescription has already been processed or is not in a pending state.';
     END IF;
 END //
 DELIMITER ;
@@ -994,9 +994,9 @@ BEGIN
 
         -- Trigger trg_notify_assigned_cashier sẽ tự động kích hoạt sau UPDATE
     ELSEIF v_current_status IS NULL THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Không tìm thấy đơn hàng này.';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'This order was not found.';
     ELSE
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đơn hàng này không ở trạng thái cần phân công thu ngân kiểm tra (chỉ các đơn đã "Paid" mới được phân công).';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'This order is not in a state that requires cashier assignment (only "Paid" orders can be assigned).';
     END IF;
 END //
 DELIMITER ;
@@ -1089,13 +1089,13 @@ BEGIN
 
     -- Kiểm tra nếu đơn hàng không tồn tại
     IF v_current_order_status IS NULL THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Đơn hàng không tồn tại.';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Order does not exist.';
     END IF;
 
     -- Kiểm tra nếu đơn hàng ở trạng thái không thể hủy
     -- Các trạng thái 'Delivered', 'Cancelled', 'Rejected-Refund' không cho phép hủy
     IF v_current_order_status IN ('Delivered', 'Cancelled', 'Rejected-Refund') THEN
-        SET v_error_message = CONCAT('Không thể hủy đơn hàng có trạng thái hiện tại là: ', v_current_order_status, '.');
+        SET v_error_message = CONCAT('Cannot cancel an order with the current status of: ', v_current_order_status, '.');
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_error_message;
     END IF;
 
@@ -1131,7 +1131,7 @@ BEGIN
             -- Gửi thông báo cụ thể về việc hoàn tiền cho khách hàng
             -- (Trigger `trg_after_payment_completed` không xử lý trạng thái 'Refunded' nên cần thông báo riêng)
             INSERT INTO `Notifications` (`customer_id`, `order_id`, `message_content`, `notification_type`)
-            VALUES (v_customer_id, p_order_id, CONCAT('Thanh toán cho đơn hàng ID: ', p_order_id, ' đã được hoàn tiền.'), 'Order Status');
+            VALUES (v_customer_id, p_order_id, CONCAT('The payment for order ID: ', p_order_id, ' has been refunded.'), 'Order Status');
         -- Nếu thanh toán đang "Pending", chuyển sang "Cancelled"
         ELSEIF @current_payment_status = 'Pending' THEN
             UPDATE `Payments`

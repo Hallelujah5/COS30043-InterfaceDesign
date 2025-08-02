@@ -11,7 +11,8 @@ from app.schemas.order import (
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 from datetime import date 
-
+from app.models.customer import Customer
+from app.utils.auth import get_current_active_customer
 router = APIRouter(prefix="/orders", tags=["Orders"])
 
 # Dependency to get OrderService instance
@@ -21,7 +22,8 @@ def get_order_service() -> OrderService:
 @router.post("/place", response_model=dict, status_code=status.HTTP_201_CREATED)
 async def place_order(
     request: OrderPlace,
-    order_service: OrderService = Depends(get_order_service)
+    order_service: OrderService = Depends(get_order_service),
+    current_customer: Customer = Depends(get_current_active_customer)
 ):
     """
     Places a new order, adding items and updating product stock.
@@ -29,16 +31,16 @@ async def place_order(
     """
     try:
         new_order_id = order_service.place_order(
-            request.customer_id,
-            request.branch_id,
-            [item.model_dump() for item in request.product_details], # Convert Pydantic models to dicts for JSON
-            request.prescription_id,
-            request.delivery_address,
-            request.delivery_party,
-            request.estimated_delivery_date,
-            request.tracking_number,
-            request.discount_amount,
-            request.order_source
+            customer_id=current_customer.customer_id,
+            branch_id=request.branch_id,
+            product_details=[item.model_dump() for item in request.product_details],
+            prescription_id=request.prescription_id,
+            delivery_address=request.delivery_address,
+            delivery_party=request.delivery_party,
+            estimated_delivery_date=request.estimated_delivery_date,
+            tracking_number=request.tracking_number,
+            discount_amount=request.discount_amount,
+            order_source=request.order_source
         )
         if not new_order_id:
             raise HTTPException(

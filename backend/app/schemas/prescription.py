@@ -6,8 +6,8 @@ from typing import Optional, Literal
 class UploadPrescriptionRequest(BaseModel):
     customer_id: int
     # Đã sửa: 'image_url' -> 'file_path'
-    file_path: str = Field(..., description="URL của hình ảnh đơn thuốc đã tải lên")
-    notes: Optional[str] = Field(None, description="Ghi chú thêm về đơn thuốc")
+    file_path: str = Field(..., description="Uploaded image's URL ")
+    notes: Optional[str] = Field(None, description="prescriptions's notes")
 
 class UploadPrescriptionResponse(BaseModel):
     message: str
@@ -19,7 +19,7 @@ class UploadPrescriptionResponse(BaseModel):
 class ValidatePrescriptionRequest(BaseModel):
     pharmacist_id: int
     validation_status: Literal['Approved', 'Rejected']
-    notes: Optional[str] = Field(None, description="Ghi chú của dược sĩ về việc xác nhận/từ chối")
+    notes: Optional[str] = Field(None, description="Pharmacist's notes of Approval/Rejection")
 
 class ValidatePrescriptionResponse(BaseModel):
     message: str
