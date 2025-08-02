@@ -2,6 +2,7 @@ from .base import Base
 from .branch import Branch
 from .staff import Staff
 from .customer import Customer
+from .productlike import ProductLike
 from .product import Product
 from .product_stock import ProductStock
 from .prescription import Prescription
@@ -11,4 +12,3 @@ from .order_item import OrderItem
 from .payment import Payment
 from .receipt import Receipt
 from .notification import Notification
-from .productlike import ProductLike
