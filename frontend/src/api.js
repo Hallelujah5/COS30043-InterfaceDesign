@@ -12,23 +12,23 @@ const api = axios.create({
 
 // --- CRITICAL ADDITION: Request Interceptor ---
 // This code runs BEFORE every API request is sent.
-api.interceptors.request.use(
-  (config) => {
-    // Get the authentication token from localStorage
-    const token = localStorage.getItem('accessToken');
+// api.interceptors.request.use(
+//   (config) => {
+//     // Get the authentication token from localStorage
+//     const token = localStorage.getItem('accessToken');
     
-    // If the token exists, add it to the 'Authorization' header
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
+//     // If the token exists, add it to the 'Authorization' header
+//     if (token) {
+//       config.headers['Authorization'] = `Bearer ${token}`;
+//     }
     
-    return config;
-  },
-  (error) => {
-    // Handle any errors that occur during the request setup
-    return Promise.reject(error);
-  }
-);
+//     return config;
+//   },
+//   (error) => {
+//     // Handle any errors that occur during the request setup
+//     return Promise.reject(error);
+//   }
+// );
 
 
 // This is the response interceptor for handling expired sessions.

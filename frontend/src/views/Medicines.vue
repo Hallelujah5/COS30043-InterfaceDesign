@@ -263,7 +263,7 @@ export default {
   async mounted() {
     await Promise.all([
       this.fetchProducts(this.currentPage),
-      this.fetchFavorites()
+      // this.fetchFavorites()
     ]);
   },
 };
