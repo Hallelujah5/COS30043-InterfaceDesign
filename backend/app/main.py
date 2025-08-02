@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 from fastapi import Request
 from fastapi.responses import RedirectResponse
+from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
 
 
 from app.api.customer_routes import router as customer_router
@@ -35,6 +36,7 @@ app = FastAPI(title="Pharmacy Management API")
 origins = [
     "*" # For the live Vercel deployment
 ]
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 
 app.add_middleware(
     CORSMiddleware,
