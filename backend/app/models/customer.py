@@ -1,4 +1,8 @@
-# app/models/customer.py
+# FILE: app/models/customer.py
+# REASON FOR CHANGE: Added the `back_populates="customer"` argument to the `likes`
+# relationship. This resolves the circular dependency with the ProductLike model
+# that was causing the login endpoint to crash.
+
 from sqlalchemy import Column, Integer, String, Enum, Date, DateTime, Boolean
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -6,7 +10,7 @@ from .base import Base # Corrected relative import
 
 class Customer(Base):
     __tablename__ = 'Customers'
- 
+    # __table_args__ = {'schema': 'pharmacy_db'} # Removed for Railway compatibility
 
     customer_id = Column(Integer, primary_key=True, autoincrement=True)
     first_name = Column(String(100), nullable=False)
@@ -16,7 +20,7 @@ class Customer(Base):
     email = Column(String(255), nullable=False, unique=True)
     phone_number = Column(String(20))
     address = Column(String(255))
-    image_url = Column(String(255)) # Added image_url column
+    image_url = Column(String(255))
     registration_date = Column(DateTime, default=func.now())
     is_active = Column(Boolean, default=True)
     password_hash = Column(String(255), nullable=False)
@@ -26,7 +30,10 @@ class Customer(Base):
     orders = relationship("Order", back_populates="customer")
     prescriptions = relationship("Prescription", back_populates="customer")
     notifications = relationship("Notification", back_populates="customer")
-    likes = relationship("ProductLike", back_populates="customer", cascade="all, delete-orphan")
+    
+    # --- THIS IS THE FIX ---
+    # Add back_populates to complete the relationship link
+    likes = relationship("ProductLike", back_populates="customer")
 
     def __repr__(self):
         return f"<Customer(id={self.customer_id}, name='{self.first_name} {self.last_name}')>"
