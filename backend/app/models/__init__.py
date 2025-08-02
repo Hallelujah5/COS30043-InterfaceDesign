@@ -11,3 +11,4 @@ from .order_item import OrderItem
 from .payment import Payment
 from .receipt import Receipt
 from .notification import Notification
+from .productlike import ProductLike
