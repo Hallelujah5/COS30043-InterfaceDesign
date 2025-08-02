@@ -140,7 +140,7 @@ async def update_product_info(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal server error: {e}")
 
 
-@router.get("", response_model=PaginatedProductResponse)
+@router.get("/", response_model=PaginatedProductResponse)
 async def get_all_products_paginated(
     page: int = 1, 
     size: int = 9, # Default to 9 items to fit a 3x3 grid
@@ -157,7 +157,7 @@ async def get_all_products_paginated(
         # It's good practice to log the error here
         # import logging
         # logging.exception("Error fetching paginated products")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An internal server error occurred.")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  detail=f"Internal error: {str(e)}" )
 
 @router.get("/prescription-required", response_model=List[ProductSchema])
 async def get_prescription_required_products(
