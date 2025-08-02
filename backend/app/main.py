@@ -74,12 +74,12 @@ app.include_router(receipt_router)
 
 
 
-@app.middleware("http")
-async def enforce_https(request: Request, call_next):
-    if request.url.scheme == "http":
-        https_url = request.url.replace(scheme="https")
-        return RedirectResponse(url=str(https_url))
-    return await call_next(request)
+# @app.middleware("http")
+# async def enforce_https(request: Request, call_next):
+#     if request.url.scheme == "http":
+#         https_url = request.url.replace(scheme="https")
+#         return RedirectResponse(url=str(https_url))
+#     return await call_next(request)
 
 
 @app.get("/")
