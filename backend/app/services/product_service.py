@@ -140,8 +140,7 @@ class ProductService:
 
     def get_all_products_paginated(self, db: Session, page: int, size: int) -> PaginatedProductResponse:
         """
-        Gets all products with pagination and enriches them with like counts.
-        This version is more robust to prevent 500 errors.
+        DIAGNOSTIC VERSION: Gets all products with pagination but WITHOUT like counts.
         """
         if page < 1: page = 1
         if size < 1: size = 10
@@ -151,25 +150,16 @@ class ProductService:
         total_items = self.product_repo.get_total_product_count(db)
         products_from_db = self.product_repo.get_paginated_products(db, skip=skip, limit=size)
         
-        # Get all like counts for the products on the current page in a single query
-        product_ids = [p.product_id for p in products_from_db]
-        like_counts = self.like_repo.get_like_counts_for_products(db, product_ids) 
-
-        # Create a dictionary for quick lookups
-        like_map = {product_id: count for product_id, count in like_counts}
-
-        products_with_likes = []
-        for product_model in products_from_db:
-            product_schema = ProductSchema.from_orm(product_model)
-            # Assign the like count from the map, defaulting to 0 if not found
-            product_schema.like_count = like_map.get(product_model.product_id, 0)
-            products_with_likes.append(product_schema)
-            
+        # --- SIMPLIFIED LOGIC ---
+        # Directly convert the database models to Pydantic schemas without adding likes.
+        # The `like_count` will default to 0 as defined in the Product schema.
+        product_schemas = [ProductSchema.from_orm(p) for p in products_from_db]
+        
         total_pages = math.ceil(total_items / size)
         
         return PaginatedProductResponse(
             total_items=total_items,
             total_pages=total_pages,
             current_page=page,
-            items=products_with_likes
-        )
+            items=product_schemas # Return the simplified list
+        )   
