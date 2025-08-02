@@ -33,7 +33,7 @@ class Customer(Base):
     
     # --- THIS IS THE FIX ---
     # Add back_populates to complete the relationship link
-    likes = relationship("ProductLike", back_populates="customer") 
+    # likes = relationship("ProductLike", back_populates="customer") 
 
     def __repr__(self):
         return f"<Customer(id={self.customer_id}, name='{self.first_name} {self.last_name}')>"
