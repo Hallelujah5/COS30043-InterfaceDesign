@@ -165,7 +165,7 @@ export default {
     async fetchProducts(page = 1) {
       this.loading = true;
       try {
-        const res = await api.get("/products/", {
+        const res = await api.get("/products", {
           params: {
             page: page,
             size: this.pageSize
