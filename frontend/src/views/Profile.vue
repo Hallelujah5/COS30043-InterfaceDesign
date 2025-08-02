@@ -100,6 +100,7 @@ import { User, Calendar, Package, Edit3, Save, X } from 'lucide-vue-next';
 import Navbar from '@/components/Navbar.vue';
 import api from '@/api';
 import { showSuccess, showError, showInfo } from '@/utils/toast';
+import axios from 'axios';
 
 export default {
   name: 'ProfilePage',
@@ -146,7 +147,7 @@ export default {
     },
     async fetchBranches() {
       try {
-        const res = await api.get('/branches');
+        const res = await axios.get('https://cos30043-interfacedesign-production-ff6f.up.railway.app/branches/');
         this.branches = res.data;
         console.log("All branches: ",res.data);
       } catch (err) {
