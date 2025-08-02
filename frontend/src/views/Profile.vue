@@ -148,6 +148,7 @@ export default {
       try {
         const res = await api.get('/branches');
         this.branches = res.data;
+        console.log("All branches: ",res.data);
       } catch (err) {
         console.error('Failed to load branches', err);
       }

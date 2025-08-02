@@ -191,7 +191,7 @@ export default {
         // 2. Store the token and user data separately in localStorage.
         localStorage.setItem('accessToken', access_token);
         localStorage.setItem('user', JSON.stringify(userInfo));
-        
+        if (!localStorage.getItem("branch_id")) {localStorage.setItem("branch_id") = 1;}
         showSuccess('Login successful!');
         this.$router.push('/');
       } catch (err) {
