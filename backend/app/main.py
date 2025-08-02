@@ -62,13 +62,13 @@ app.include_router(report_router)
 app.include_router(deliveries_router)
 app.include_router(receipt_router)
 
-# Sự kiện khởi động ứng dụng: Tạo các bảng cơ sở dữ liệu nếu chúng chưa tồn tại
-@app.on_event("startup")
-async def startup_event():
-    print("Ứng dụng đang khởi động...")
-    # Gọi hàm để tạo các bảng cơ sở dữ liệu
-    create_db_tables()
-    print("Đã kiểm tra và tạo (nếu cần) các bảng cơ sở dữ liệu.")
+
+# @app.on_event("startup")
+# async def startup_event():
+#     print("Ứng dụng đang khởi động...")
+#     # Gọi hàm để tạo các bảng cơ sở dữ liệu
+#     create_db_tables()
+#     print("Đã kiểm tra và tạo (nếu cần) các bảng cơ sở dữ liệu.")
 
 @app.get("/")
 async def root():

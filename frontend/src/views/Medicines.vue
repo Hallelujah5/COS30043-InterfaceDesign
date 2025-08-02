@@ -252,8 +252,6 @@ export default {
     },
     async fetchFavorites() {
       // This logic remains the same
-      const token = localStorage.getItem("accessToken");
-      if (!token) return;
       try {
         const res = await api.get('/products/me/likes');
         this.favorites = res.data.map(fav => fav.product_id);
