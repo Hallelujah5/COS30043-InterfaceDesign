@@ -56,20 +56,16 @@ class ProductService:
         if not product:
             raise ValueError(f"Product with ID {product_id} not found.")
 
-        # 1. Get the like count for the product
+        # Get the like count and user's like status
         like_count = self.like_repo.get_like_count_for_product(db, product.product_id)
+        user_has_liked = self.like_repo.check_if_user_liked_product(db, customer_id, product.product_id) if customer_id else False
 
-        # 2. Check if the current user (if provided) has liked the product
-        user_has_liked = False
-        if customer_id:
-            user_has_liked = self.like_repo.check_if_user_liked_product(db, customer_id, product.product_id)
-
-        # 3. Combine the product data from the DB with the new info
+        # CORRECTED PART: Combine all data into a dictionary
         product_data = product.__dict__
         product_data['like_count'] = like_count
         product_data['user_has_liked'] = user_has_liked
 
-        # 4. Validate and return using the correct schema
+        # Validate the complete dictionary using the correct schema
         return ProductWithLikeInfo.model_validate(product_data)
 
     def search_products(self, db: Session, query: str | None = None, category: str | None = None) -> List[ProductSchema]:
