@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 from fastapi import Request
 from fastapi.responses import RedirectResponse
-from starlette.middleware.proxy_headers import ProxyHeadersMiddleware
+
 
 
 from app.api.customer_routes import router as customer_router
@@ -36,7 +36,7 @@ app = FastAPI(title="Pharmacy Management API")
 origins = [
     "*" # For the live Vercel deployment
 ]
-app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -72,14 +72,16 @@ app.include_router(receipt_router)
 #     create_db_tables()
 #     print("Đã kiểm tra và tạo (nếu cần) các bảng cơ sở dữ liệu.")
 
+
+
+@app.middleware("http")
+async def enforce_https(request: Request, call_next):
+    if request.url.scheme == "http":
+        https_url = request.url.replace(scheme="https")
+        return RedirectResponse(url=str(https_url))
+    return await call_next(request)
+
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to Pharmacy Management API"}
-
-
-# @app.middleware("http")
-# async def enforce_https(request: Request, call_next):
-#     if request.url.scheme == "http":
-#         https_url = request.url.replace(scheme="https")
-#         return RedirectResponse(url=str(https_url))
-#     return await call_next(request)
