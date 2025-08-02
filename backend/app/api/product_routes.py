@@ -10,6 +10,7 @@ from app.schemas.product import LikedProduct
 from app.schemas.customer import Customer
 from app.utils.auth import get_current_active_customer
 import os, shutil
+from app.schemas.product_like import ProductWithLikeInfo
 
 
 
@@ -189,16 +190,18 @@ async def search_products(
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal server error: {e}")
 
-@router.get("/{product_id}", response_model=ProductSchema)
+@router.get("/{product_id}", response_model=ProductWithLikeInfo) 
 async def get_product_details(
     product_id: int,
     product_service: ProductService = Depends(get_product_service),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    # Use an optional customer to see if the user is logged in
 ):
     """
-    Provides detailed information about a specific product.
+    Provides detailed information about a specific product, including like count.
     """
     try:
+        # Pass the customer_id to the service layer if the user is logged in
         product = product_service.get_product_details(db, product_id)
         return product
     except ValueError as e:

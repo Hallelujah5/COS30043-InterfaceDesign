@@ -8,6 +8,8 @@ from app.repositories.product_like_repository import ProductLikeRepository
 # Import the Pydantic schema to structure the API response
 from app.schemas.product import Product as ProductSchema, PaginatedProductResponse
 from app.models.product import Product as ProductModel # The SQLAlchemy model
+from app.schemas.product_like import ProductWithLikeInfo # Make sure you import this schema
+
 
 
 class ProductService:
@@ -46,21 +48,29 @@ class ProductService:
         
         return self.product_repo.delete_product(db, product_id)
 
-    def get_product_details(self, db: Session, product_id: int) -> ProductSchema:
+    def get_product_details(self, db: Session, product_id: int, customer_id: Optional[int] = None) -> ProductWithLikeInfo:
         """
-        Gets details for a specific product, including its like count.
+        Gets details for a specific product, including its like count and if the current user has liked it.
         """
         product = self.product_repo.get_product_by_id(db, product_id)
         if not product:
             raise ValueError(f"Product with ID {product_id} not found.")
 
-        # Enrich the single product with its like count
-        # like_count = self.like_repo.get_like_count_for_product(db, product.product_id)
-        
-        product_schema = ProductSchema.model_validate(product)
-        # product_schema.like_count = like_count
-        
-        return product_schema
+        # 1. Get the like count for the product
+        like_count = self.like_repo.get_like_count_for_product(db, product.product_id)
+
+        # 2. Check if the current user (if provided) has liked the product
+        user_has_liked = False
+        if customer_id:
+            user_has_liked = self.like_repo.check_if_user_liked_product(db, customer_id, product.product_id)
+
+        # 3. Combine the product data from the DB with the new info
+        product_data = product.__dict__
+        product_data['like_count'] = like_count
+        product_data['user_has_liked'] = user_has_liked
+
+        # 4. Validate and return using the correct schema
+        return ProductWithLikeInfo.model_validate(product_data)
 
     def search_products(self, db: Session, query: str | None = None, category: str | None = None) -> List[ProductSchema]:
         """
