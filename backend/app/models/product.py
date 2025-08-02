@@ -20,6 +20,8 @@ class Product(Base):
     order_items = relationship("OrderItem", back_populates="product")
     product_stock_items = relationship("ProductStock", back_populates="product")
     notifications = relationship("Notification", back_populates="product")
+    
     likes = relationship("ProductLike", back_populates="product")
+
     def __repr__(self):
         return f"<Product(id={self.product_id}, name='{self.name}', price={self.price})>"
