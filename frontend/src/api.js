@@ -4,7 +4,7 @@
 
 import axios from "axios";
 import { showError } from '@/utils/toast'; // Assuming you have a toast utility
-axios.defaults.baseURL = "https://cos30043-interfacedesign-production-ff6f.up.railway.app";
+
 const api = axios.create({
     // Correctly uses the secure HTTPS URL for your Railway backend
     baseURL: "https://cos30043-interfacedesign-production-ff6f.up.railway.app"
