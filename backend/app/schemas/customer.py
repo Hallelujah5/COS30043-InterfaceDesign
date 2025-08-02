@@ -1,6 +1,7 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime, date
-from typing import Optional
+from typing import Optional, List  
+from .product_like import ProductLike as ProductLikeSchema 
 
 class CustomerBase(BaseModel):
     first_name: str
@@ -14,7 +15,7 @@ class CustomerCreate(CustomerBase):
     password: str
 
 class CustomerUpdate(CustomerBase):
-    # For updating, all fields are optional
+    
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     gender: Optional[str] = None
@@ -22,13 +23,15 @@ class CustomerUpdate(CustomerBase):
     phone_number: Optional[str] = None
     address: Optional[str] = None
     email: Optional[EmailStr] = None
-    image_url: Optional[str] = None # Added image_url
+    image_url: Optional[str] = None
 
 class Customer(CustomerBase):
     customer_id: int
     registration_date: datetime
     is_active: bool
     has_prescription: bool
+
+    likes: List[ProductLikeSchema] = []
 
     class Config:
         from_attributes = True

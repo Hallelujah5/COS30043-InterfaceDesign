@@ -26,7 +26,7 @@ class Customer(Base):
     orders = relationship("Order", back_populates="customer")
     prescriptions = relationship("Prescription", back_populates="customer")
     notifications = relationship("Notification", back_populates="customer")
-    # likes = relationship("ProductLike", back_populates="customer", cascade="all, delete-orphan")
+    likes = relationship("ProductLike", back_populates="customer", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Customer(id={self.customer_id}, name='{self.first_name} {self.last_name}')>"
