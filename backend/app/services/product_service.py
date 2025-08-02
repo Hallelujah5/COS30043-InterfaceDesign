@@ -154,8 +154,11 @@ class ProductService:
         for product_model in products_from_db:
             # For each product, get its like count individually.
             # While this is less performant (N+1 queries), it is far more reliable on limited-resource servers.
-            like_count = self.like_repo.get_like_count_for_product(db, product_model.product_id)
-            
+            try:
+                like_count = self.like_repo.get_like_count_for_product(db, product_model.product_id)
+            except Exception as e:
+                print(f"Error fetching like count for product {product_model.product_id}: {e}")
+                like_count = 0
             product_schema = ProductSchema.from_orm(product_model)
             product_schema.like_count = like_count
             products_with_likes.append(product_schema)
