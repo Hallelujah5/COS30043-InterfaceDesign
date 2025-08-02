@@ -140,7 +140,7 @@ async def update_product_info(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Internal server error: {e}")
 
 
-@router.get("/", response_model=PaginatedProductResponse)
+@router.get("", response_model=PaginatedProductResponse)
 async def get_all_products_paginated(
     page: int = 1, 
     size: int = 9, # Default to 9 items to fit a 3x3 grid
