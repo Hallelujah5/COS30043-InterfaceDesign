@@ -45,7 +45,7 @@ async def upload_prescription(
             shutil.copyfileobj(file.file, buffer)
 
         # 2. Pass saved file path to service (relative path for web access)
-        relative_file_path = f"http://localhost:8000/static/prescription/{filename}"
+        relative_file_path = f"https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/prescription/{filename}"
         result = prescription_service.upload_prescription(customer_id, relative_file_path, notes)
         return result
     except Exception as e:

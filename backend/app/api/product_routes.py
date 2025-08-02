@@ -61,7 +61,7 @@ async def create_product(
             shutil.copyfileobj(file.file, buffer)
         
         # Create the publicly accessible URL for the saved image
-        image_url = f"http://localhost:8000/static/products/{file.filename}"
+        image_url = f"https://cos30043-interfacedesign-production-ff6f.up.railway.app/static/products/{file.filename}"
 
     try:
         new_product_id = product_service.import_new_product(
