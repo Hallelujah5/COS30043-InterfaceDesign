@@ -32,21 +32,21 @@ api.interceptors.request.use(
 
 
 // This is the response interceptor for handling expired sessions.
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('user');
-      showError("Your session has expired. Please log in again.");
-      setTimeout(() => {
-        if (window.location.pathname !== '/login') {
-            window.location.href = '/login';
-        }
-      }, 1500);
-    }
-    return Promise.reject(error);
-  }
-);
+// api.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     if (error.response && error.response.status === 401) {
+//       localStorage.removeItem('accessToken');
+//       localStorage.removeItem('user');
+//       showError("Your session has expired. Please log in again.");
+//       setTimeout(() => {
+//         if (window.location.pathname !== '/login') {
+//             window.location.href = '/login';
+//         }
+//       }, 1500);
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 export default api;
