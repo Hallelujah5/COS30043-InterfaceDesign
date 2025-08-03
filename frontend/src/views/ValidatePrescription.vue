@@ -99,12 +99,17 @@ onMounted(async () => {
   const staff = localStorage.getItem('user');
   const staffJSON = staff ? JSON.parse(staff) : null;
   const staffId = staffJSON?.user_id;
+  const staffrole = staffJSON?.role;
 
   if (!staffId) {
     showError('Staff ID is invalid. Please log in again.');
     return;
   }
-  
+
+  if (staffrole !== "Pharmacist") {
+    showError('Staff role is invalid. Please log in again.');
+    return;
+  }
   try {
     const res = await api.get(`/prescriptions/pharmacist/${staffId}/pending-review`);
     prescriptions.value = res.data.prescriptions;
