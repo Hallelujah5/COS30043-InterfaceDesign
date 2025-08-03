@@ -3,7 +3,7 @@ from .branch import Branch
 from .staff import Staff
 from .product import Product
 from .customer import Customer
-# from .productlike import ProductLike
+from .productlike import ProductLike
 from .product_stock import ProductStock
 from .prescription import Prescription
 from .deliveries import Deliveries
