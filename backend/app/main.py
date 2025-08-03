@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 import os
 from fastapi import Request
 from fastapi.responses import RedirectResponse
-
+from sqlalchemy.orm import configure_mappers
 
 
 from app.api.customer_routes import router as customer_router
@@ -23,7 +23,7 @@ from app.api.receipt_routes import router as receipt_router
 # Quan trọng: Import tất cả các model để Base.metadata.create_all() có thể nhận diện chúng
 # Cách này sẽ tải tất cả các model thông qua app/models/__init__.py
 from app.models import *
-
+configure_mappers()
 # Import hàm tạo bảng từ db.py
 from app.utils.db import create_db_tables
 
