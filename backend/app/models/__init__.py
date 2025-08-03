@@ -12,12 +12,3 @@ from .order_item import OrderItem
 from .payment import Payment
 from .receipt import Receipt
 from .notification import Notification
-# from sqlalchemy.orm import relationship
-
-
-# # Bind AFTER all imports
-# Customer.likes = relationship("ProductLike", back_populates="customer")
-# ProductLike.customer = relationship("Customer", back_populates="likes")
-
-# Product.likes = relationship("ProductLike", back_populates="product")
-# ProductLike.product = relationship("Product", back_populates="likes")

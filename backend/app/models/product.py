@@ -1,7 +1,6 @@
-# app/models/product.py
 from sqlalchemy import Column, Integer, String, Text, DECIMAL, Boolean
 from sqlalchemy.orm import relationship
-from .base import Base # Corrected relative import
+from .base import Base 
 
 class Product(Base):
     __tablename__ = 'Products'
@@ -13,15 +12,15 @@ class Product(Base):
     description = Column(Text)
     price = Column(DECIMAL(10, 2), nullable=False)
     category = Column(String(100))
-    image_url = Column(String(255)) # Added image_url column
+    image_url = Column(String(255))
     is_prescription_required = Column(Boolean, default=False)
 
-    # Relationships
+    
     order_items = relationship("OrderItem", back_populates="product")
     product_stock_items = relationship("ProductStock", back_populates="product")
     notifications = relationship("Notification", back_populates="product")
     
-    # likes = relationship("ProductLike", back_populates="product")
+    likes = relationship("ProductLike", back_populates="product")
 
     def __repr__(self):
         return f"<Product(id={self.product_id}, name='{self.name}', price={self.price})>"
