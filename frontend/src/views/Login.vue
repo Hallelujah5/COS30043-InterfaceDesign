@@ -5,7 +5,7 @@
   >
     <div class="w-100" style="max-width: 450px; padding: 1rem;">
       <div class="text-center mb-4">
-        <h2>Welcome to PharmaPlace</h2>
+        <h2>Welcome to FPT Long Chau!</h2>
         <p class="text-muted">Your trusted pharmaceutical marketplace</p>
       </div>
 

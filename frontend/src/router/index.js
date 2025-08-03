@@ -21,80 +21,49 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
-      component: Index,
+      path: '/', name: 'home', component: Index,
     },
     {
-      path: '/login',
-      name: 'login',
-      component: Login,
+      path: '/login', name: 'login', component: Login,
     },
     {
-      path: '/medicines',
-      name: 'medicines',
-      component: Medicines,
+      path: '/medicines', name: 'medicines',component: Medicines, 
     },
     {
-        path: '/medicine/:id', 
-        name: 'medicine-detail',
-        component: MedicineDetail,
+        path: '/medicine/:id', name: 'medicine-detail', component: MedicineDetail,
     },
     {
-      path: '/prescriptions',
-      name: 'prescriptions',
-      component: Prescriptions,
+      path: '/prescriptions', name: 'prescriptions', component: Prescriptions,
     },
     {
-      path: '/history',
-      name: 'history',
-      component: History,
+      path: '/history', name: 'history',  component: History,
     },
     {
-      path: '/checkout',
-      name: 'checkout',
-      component: Checkout,
+      path: '/checkout', name: 'checkout', component: Checkout,
     },
     {
-        path: '/profile',
-        name: 'profile',
-        component: Profile,
+        path: '/profile', name: 'profile', component: Profile,
     },
     {
-        path: '/cashier-checkout',
-        name: 'cashier-checkout',
-        component: CashierCheckout,
-    },
-
-    {
-        path: '/validate-prescription',
-        name: 'validate-prescription',
-        component: ValidatePrescription,
-    },
-
-    {
-        path: '/payment',
-        name: 'payment',
-        component: Payments,
+        path: '/cashier-checkout',  name: 'cashier-checkout', component: CashierCheckout,
     },
     {
-        path: '/task-delegation',
-        name: 'task-delegation',
-        component: TaskDelegation,
+        path: '/validate-prescription', name: 'validate-prescription', component: ValidatePrescription,
     },
     {
-        path: '/restock',
-        name: 'restock',
-        component: Restock,
+        path: '/payment', name: 'payment', component: Payments,
     },
     {
-        path: '/product-management',
-        name: 'productmanagement',
-        component: ProductManagement,
+        path: '/task-delegation', name: 'task-delegation', component: TaskDelegation,
     },
     {
-      path: '/:pathMatch(.*)*',
-      name: 'NotFound',
+        path: '/restock', name: 'restock', component: Restock,
+    },
+    {
+        path: '/product-management',  name: 'productmanagement', component: ProductManagement,
+    },
+    {
+      path: '/:pathMatch(.*)*', name: 'NotFound',
       component: NotFound,
     },
   ],
