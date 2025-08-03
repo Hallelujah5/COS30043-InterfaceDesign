@@ -28,18 +28,19 @@
               </div>
               <div class="col-md-6">
   <label for="category" class="form-label">Category</label>
-  <select class="form-select" id="category" v-model="newProduct.category">
-    <option disabled value="">Select a category</option>
-    <option value="Thuốc giảm đau">Thuốc giảm đau</option>
-    <option value="Kháng sinh">Kháng sinh</option>
-    <option value="Vitamin">Vitamin</option>
-    <option value="Chăm sóc mắt">Chăm sóc mắt</option>
-    <option value="Vật tư y tế">Vật tư y tế</option>
-    <option value="Thuốc ho">Thuốc ho</option>
-    <option value="Thuốc dị ứng">Thuốc dị ứng</option>
-    <option value="Thuốc tiêu hóa">Thuốc tiêu hóa</option>
-    <option value="Thực phẩm chức năng">Thực phẩm chức năng</option>
-  </select>
+<select class="form-select" id="category" v-model="newProduct.category">
+  <option disabled value="">Select a category</option>
+  <option value="Pain Relief">Pain Relief</option>
+  <option value="Antibiotics">Antibiotics</option>
+  <option value="Vitamins">Vitamins</option>
+  <option value="Eye Care">Eye Care</option>
+  <option value="Medical Supplies">Medical Supplies</option>
+  <option value="Cough Medicine">Cough Medicine</option>
+  <option value="Allergy Medicine">Allergy Medicine</option>
+  <option value="Digestive Medicine">Digestive Medicine</option>
+  <option value="Supplements">Supplements</option>
+</select>
+
 </div>
 
               <div class="col-12">
