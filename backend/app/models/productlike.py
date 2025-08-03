@@ -18,7 +18,7 @@ class ProductLike(Base):
     liked_date = Column(DateTime, default=func.now())
 
     # Relationships to easily access related Customer and Product objects
-    # customer = relationship("Customer", back_populates="likes")
+    customer = relationship("Customer", back_populates="likes")
     # product = relationship("Product", back_populates="likes")
     
 
