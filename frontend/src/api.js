@@ -1,12 +1,8 @@
-// FILE: frontend/src/api.js
-// REASON FOR CHANGE: Updated the baseURL to use the secure HTTPS protocol
-// to fix the "Mixed Content" browser error.
 
 import axios from "axios";
-import { showError } from '@/utils/toast'; // Assuming you have a toast utility
+import { showError } from '@/utils/toast'; 
 
 const api = axios.create({
-    // Replace the old http:// URL with your secure Railway URL
     baseURL: "https://cos30043-interfacedesign-production-ff6f.up.railway.app"
 });
 

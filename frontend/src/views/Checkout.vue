@@ -1,4 +1,3 @@
-<!-- FILE: src/pages/Checkout.vue -->
 <template>
   <div>
     <Navbar />

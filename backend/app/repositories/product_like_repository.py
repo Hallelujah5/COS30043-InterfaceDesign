@@ -1,4 +1,4 @@
-# app/repositories/product_like_repository.py
+
 from sqlalchemy.orm import Session
 from sqlalchemy import func, exists
 from app.models.productlike import ProductLike

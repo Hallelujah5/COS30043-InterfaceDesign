@@ -1,4 +1,3 @@
-# app/api/product_routes.py
 from fastapi import APIRouter, Depends, HTTPException, Query, status, APIRouter, Depends, HTTPException, status, File, Form, UploadFile
 from sqlalchemy.orm import Session
 from app.services.product_service import ProductService

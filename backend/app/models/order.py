@@ -1,4 +1,4 @@
-# app/models/order.py
+
 from sqlalchemy import Column, Integer, DECIMAL, DateTime, Enum, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship

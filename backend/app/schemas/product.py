@@ -1,4 +1,4 @@
-# app/schemas/product.py
+
 from pydantic import BaseModel
 from typing import Optional, List
 
@@ -9,7 +9,7 @@ class ProductBase(BaseModel):
     price: float
     category: Optional[str] = None
     is_prescription_required: bool = False
-    image_url: Optional[str] = None # Added image_url
+    image_url: Optional[str] = None 
 
 class Product(ProductBase):
     product_id: int

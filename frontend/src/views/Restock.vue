@@ -1,4 +1,3 @@
-<!-- FILE: src/pages/Restock.vue -->
 <template>
   <div>
     <Navbar />

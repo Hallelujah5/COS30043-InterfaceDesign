@@ -1,7 +1,7 @@
-# app/repositories/product_repository.py
+
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from app.models.product import Product # Your SQLAlchemy ORM model
+from app.models.product import Product 
 from app.utils.db import get_db_connection
 from typing import List, Dict, Any, Optional
 

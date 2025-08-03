@@ -1,4 +1,3 @@
-<!-- FILE: src/pages/ProductManagement.vue -->
 <template>
   <div>
     <Navbar />

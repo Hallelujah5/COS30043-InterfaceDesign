@@ -1,7 +1,7 @@
-# app/repositories/customer_repository.py
+
 from sqlalchemy.orm import Session
 from app.models.customer import Customer
-from app.models.notification import Notification # Import the Notification ORM model
+from app.models.notification import Notification 
 from app.utils.db import get_db_connection
 from passlib.context import CryptContext
 from typing import List, Dict, Any, Optional

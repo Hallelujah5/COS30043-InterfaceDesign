@@ -1,4 +1,3 @@
-# app/api/order_routes.py
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from app.services.order_service import OrderService

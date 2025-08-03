@@ -1,4 +1,4 @@
-# app/models/notification.py
+
 from sqlalchemy import Column, Integer, Text, Enum, DateTime, Boolean, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship

@@ -1,14 +1,13 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import math
-# Import repositories for both products and likes
+
 from app.repositories.product_repository import ProductRepository
 from app.repositories.product_like_repository import ProductLikeRepository
 
-# Import the Pydantic schema to structure the API response
 from app.schemas.product import Product as ProductSchema, PaginatedProductResponse
-from app.models.product import Product as ProductModel # The SQLAlchemy model
-from app.schemas.product_like import ProductWithLikeInfo # Make sure you import this schema
+from app.models.product import Product as ProductModel 
+from app.schemas.product_like import ProductWithLikeInfo 
 
 
 

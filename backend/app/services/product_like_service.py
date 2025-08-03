@@ -1,7 +1,7 @@
-# app/services/product_like_service.py
+
 from sqlalchemy.orm import Session
 from app.repositories.product_like_repository import ProductLikeRepository
-from app.repositories.product_repository import ProductRepository # Assuming you have a ProductRepository
+from app.repositories.product_repository import ProductRepository 
 from app.models.productlike import ProductLike
 from app.schemas.product import LikedProduct 
 from typing import List

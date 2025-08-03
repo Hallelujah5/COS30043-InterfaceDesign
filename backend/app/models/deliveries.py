@@ -1,4 +1,4 @@
-# app/models/delivery.py
+
 from sqlalchemy import Column, Integer, String, Enum, DateTime
 from sqlalchemy.orm import relationship
 from .base import Base # Corrected relative import

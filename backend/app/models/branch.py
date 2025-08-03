@@ -1,4 +1,4 @@
-# app/models/branch.py
+
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 from .base import Base # Corrected relative import

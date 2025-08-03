@@ -1,8 +1,8 @@
-# app/models/receipt.py
+
 from sqlalchemy import Column, Integer, DateTime, Text, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from .base import Base # Corrected relative import
+from .base import Base 
 
 class Receipt(Base):
     __tablename__ = 'Receipts'

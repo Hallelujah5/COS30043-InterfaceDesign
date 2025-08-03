@@ -1,8 +1,8 @@
-# app/services/order_service.py
+
 from sqlalchemy.orm import Session
 from app.repositories.order_repository import OrderRepository
-from app.models.order import Order # Your SQLAlchemy ORM model for Order
-from app.models.order_item import OrderItem # For populating DetailedOrderResponse
+from app.models.order import Order 
+from app.models.order_item import OrderItem 
 from typing import List, Dict, Any, Optional
 from datetime import datetime
 

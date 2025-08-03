@@ -1,7 +1,7 @@
-# app/models/staff.py
+
 from sqlalchemy import Column, Integer, String, Enum, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-from .base import Base # Corrected relative import
+from .base import Base 
 
 class Staff(Base):
     __tablename__ = 'Staff'
