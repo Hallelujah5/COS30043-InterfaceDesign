@@ -1,7 +1,7 @@
 
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
-from app.utils.db import Base
+from .base import Base
 
 class ProductLike(Base):
     """
