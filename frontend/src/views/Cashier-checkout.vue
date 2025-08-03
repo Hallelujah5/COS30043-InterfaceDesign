@@ -121,10 +121,26 @@ const fetchOrders = async () => {
   }
 };
 
-onMounted(
+onMounted(() => {
+  const staff = localStorage.getItem('user');
+  const staffJSON = staff ? JSON.parse(staff) : null;
+  const staffId = staffJSON?.user_id;
+  const staffrole = staffJSON?.role;
+
+  if (!staffId) {
+    showError('Staff ID is invalid. Please log in again.');this.$router.push('/');
+    return;
+  }
+
+  if (staffrole !== "Cashier") {
+    showError('Staff role is invalid. Please log in again.');this.$router.push('/');
+    return;
+  }
+  fetchOrders;
+}
   
 
-fetchOrders);
+);
 
 const handleStatusChange = async (id, newStatus) => {
   try {

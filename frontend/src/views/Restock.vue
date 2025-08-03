@@ -231,6 +231,24 @@ const handleUpdateMinStock = async () => {
 
 // Lifecycle Hooks
 onMounted(async () => {
+
+const staff = localStorage.getItem('user');
+  const staffJSON = staff ? JSON.parse(staff) : null;
+  const staffId = staffJSON?.user_id;
+  const staffrole = staffJSON?.role;
+
+  if (!staffId) {
+    showError('Staff ID is invalid. Please log in again.');this.$router.push('/');
+    return;
+  }
+
+  if (staffrole !== "BranchManager") {
+    showError('Staff role is invalid. Please log in again.');this.$router.push('/');
+    return;
+  }
+
+
+
   try {
     const res = await api.get("/branches");
     branches.value = res.data;

@@ -103,11 +103,13 @@ onMounted(async () => {
 
   if (!staffId) {
     showError('Staff ID is invalid. Please log in again.');
+    this.$router.push('/');
     return;
   }
 
   if (staffrole !== "Pharmacist") {
     showError('Staff role is invalid. Please log in again.');
+    this.$router.push('/');
     return;
   }
   try {
