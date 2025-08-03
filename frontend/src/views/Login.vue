@@ -100,7 +100,7 @@
           <h5 class="card-title mb-3 d-flex align-items-center">
             <User class="me-2" /> Create Account
           </h5>
-          <form @submit.prevent="handleRegister">
+          <form @submit.prevent="handleRegister" novalidate>
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label for="registerFName" class="form-label">First Name</label>
