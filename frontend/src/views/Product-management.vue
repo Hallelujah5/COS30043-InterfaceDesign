@@ -136,6 +136,17 @@ const selectedFile = ref(null);
 
 // Fetches all products to display in the table
 const fetchProducts = async () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  const cashierId = user?.user_id;
+  const cashierRole = user?.role;
+  if (!cashierId) {
+    showError('Staff ID not logged in.');
+    return;
+  }
+    if (!cashierRole) {
+    showError('Invalid Role.');
+    return;
+  }
   try {
     const res = await api.get('/products?page=1&size=1000'); // Fetch a large number to show all products
     products.value = res.data.items;

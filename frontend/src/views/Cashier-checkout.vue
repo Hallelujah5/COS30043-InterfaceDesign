@@ -104,11 +104,18 @@ const selectedStatus = ref('all');
 const fetchOrders = async () => {
   const user = JSON.parse(localStorage.getItem('user'));
   const cashierId = user?.user_id;
-
+  const cashierRole = user?.role;
   if (!cashierId) {
-    showError('Cashier not logged in.');
+    showError('Staff ID not logged in.');
     return;
   }
+    if (!cashierRole) {
+    showError('Invalid Role.');
+    return;
+  }
+  
+
+
 
   try {
     const res = await api.get('/orders/pending-cashier-review', {
@@ -121,26 +128,7 @@ const fetchOrders = async () => {
   }
 };
 
-onMounted(() => {
-  const staff = localStorage.getItem('user');
-  const staffJSON = staff ? JSON.parse(staff) : null;
-  const staffId = staffJSON?.user_id;
-  const staffrole = staffJSON?.role;
-
-  if (!staffId) {
-    showError('Staff ID is invalid. Please log in again.');this.$router.push('/');
-    return;
-  }
-
-  if (staffrole !== "Cashier") {
-    showError('Staff role is invalid. Please log in again.');this.$router.push('/');
-    return;
-  }
-  fetchOrders;
-}
-  
-
-);
+onMounted(fetchOrders);
 
 const handleStatusChange = async (id, newStatus) => {
   try {
