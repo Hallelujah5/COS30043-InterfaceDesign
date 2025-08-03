@@ -22,7 +22,7 @@ def get_product_service() -> ProductService:
 def get_product_like_service() -> ProductLikeService:
     return ProductLikeService()
 
-@router.post("/", response_model=dict, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=dict, status_code=status.HTTP_201_CREATED)
 async def create_product(
     # Instead of a single Pydantic model, we now accept form data
     name: str = Form(...),
