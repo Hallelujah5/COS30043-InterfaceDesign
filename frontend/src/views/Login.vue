@@ -151,6 +151,10 @@ import { LogIn, User } from 'lucide-vue-next';
 import api from '@/api';
 // Importing my toast utility functions
 import { showInfo, showSuccess, showError } from '@/utils/toast';
+import { useRouter } from 'vue-router';
+
+
+const router = useRouter();
 
 export default {
   name: 'LoginPage',
@@ -193,7 +197,7 @@ export default {
         localStorage.setItem('user', JSON.stringify(userInfo));
         if (!localStorage.getItem("branch_id")) {localStorage.setItem("branch_id", "1")}
         showSuccess('Login successful!');
-        this.$router.push('/');
+        router.push('/');
       } catch (err) {
         const msg = err.response?.data?.detail || 'Login failed. Please try again.';
         showError(msg);

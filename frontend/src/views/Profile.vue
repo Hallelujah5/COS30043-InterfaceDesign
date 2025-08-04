@@ -101,7 +101,10 @@ import Navbar from '@/components/Navbar.vue';
 import api from '@/api';
 import { showSuccess, showError, showInfo } from '@/utils/toast';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
+
+const router = useRouter();
 export default {
   name: 'ProfilePage',
   components: { Navbar, User, Calendar, Package, Edit3, Save, X },
@@ -126,7 +129,7 @@ export default {
       console.log("fetching user in /profile...")
       const data = localStorage.getItem('user');
       console.log("User fetched: ", data);
-      if (!data) return this.$router.push('/login');
+      if (!data) return router.push('/login');
       const parsed = JSON.parse(data);
       console.log("Parsed data: ", parsed);
       try {
@@ -142,7 +145,7 @@ export default {
         };
       } catch (error) {
         showError('Could not load customer information.');
-        this.$router.push('/login');
+        router.push('/login');
       }
     },
     async fetchBranches() {

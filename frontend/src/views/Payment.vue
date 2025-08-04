@@ -80,7 +80,9 @@ import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import api from '@/api';
 import { showSuccess, showError, showInfo } from '@/utils/toast';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 export default {
   name: 'PaymentsPage',
   components: { Navbar, Footer, CreditCard, Package, Clock, DollarSign },
@@ -136,7 +138,7 @@ export default {
   },
   created() {
     const storedUser = localStorage.getItem('user');
-    if (!storedUser) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
+    if (!storedUser) {showError("Please login before purchasing any medicines.");router.push(`/login`);return};
     if (storedUser) {
       const customer = JSON.parse(storedUser);
       this.fetchUnpaidOrders(customer.user_id);

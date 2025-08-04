@@ -124,12 +124,12 @@ onMounted(async () => {
   const staffrole = staffJSON?.role;
 
   if (!staffId) {
-    showError('Staff ID is invalid. Please log in again.');this.$router.push('/');
+    showError('Staff ID is invalid. Please log in again.');router.push('/');
     return;
   }
 
   if (staffrole !== "BranchManager") {
-    showError('Staff role is invalid. Please log in again.');this.$router.push('/');
+    showError('Staff role is invalid. Please log in again.');router.push('/');
     return;
   }
 

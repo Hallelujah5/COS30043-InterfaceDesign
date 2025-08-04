@@ -72,8 +72,11 @@ import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import api from '@/api';
 import { showSuccess, showError, showInfo } from '@/utils/toast';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 export default {
+
   name: 'HistoryPage',
   components: { Navbar, Footer, BadgeCheck, Clock, XCircle },
   data() {
@@ -128,7 +131,7 @@ export default {
         const token = localStorage.getItem('accessToken');
           if (!token){
           showError('Please log in to view your orders.');
-          this.$router.push('/login');
+          router.push('/login');
           return;
         }
         const { user_id: customerId } = JSON.parse(userData);

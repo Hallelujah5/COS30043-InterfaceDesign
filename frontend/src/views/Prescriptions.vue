@@ -88,7 +88,10 @@ import Footer from '@/components/Footer.vue';
 import { Upload, FileText, CheckCircle } from 'lucide-vue-next';
 import api from '@/api';
 import { showSuccess, showError, showInfo } from '@/utils/toast';
+import { useRouter } from 'vue-router';
 
+
+const router = useRouter();
 export default {
   name: 'PrescriptionsPage',
   components: { Navbar, Footer, Upload, FileText, CheckCircle },
@@ -129,7 +132,7 @@ export default {
       const token = localStorage.getItem('accessToken');
         if (!token) {
         showError('You must be logged in to upload a prescription.');
-        this.$router.push('/login');
+        router.push('/login');
         return;
       }
       
@@ -157,7 +160,7 @@ export default {
     // This hook checks if the user is logged in when the component is created.
     if (!localStorage.getItem('accessToken')) {
       showError('Please log in to access this page.');
-      this.$router.push('/login');
+      router.push('/login');
     }
   },
 };

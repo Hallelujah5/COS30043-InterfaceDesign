@@ -148,6 +148,7 @@ import { ArchiveRestore, ChartCandlestick, SquarePen } from 'lucide-vue-next';
 import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import { showSuccess, showError } from '@/utils/toast';
+import { useRouter } from 'vue-router';
 
 // State Management
 const branches = ref([]);
@@ -158,7 +159,7 @@ const selectedProductId = ref("");
 const quantityToAdd = ref("");
 const minStockProductId = ref("");
 const minStockValue = ref("");
-
+const router = useRouter();
 // Computed properties for sorting
 const sortedBranchProducts = computed(() => {
   return [...branchProducts.value].sort((a, b) => a.id - b.id);
@@ -237,12 +238,12 @@ const staff = localStorage.getItem('user');
   const staffrole = staffJSON?.role;
 
   if (!staffId) {
-    showError('Staff ID is invalid. Please log in again.');this.$router.push('/');
+    showError('Staff ID is invalid. Please log in again.');router.push('/');
     return;
   }
 
   if (staffrole !== "BranchManager") {
-    showError('Staff role is invalid. Please log in again.');this.$router.push('/');
+    showError('Staff role is invalid. Please log in again.');router.push('/');
     return;
   }
 

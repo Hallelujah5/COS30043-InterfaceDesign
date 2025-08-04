@@ -95,6 +95,9 @@
 import { useCartStore } from '@/stores/cart';
 // Importing my toast utility functions
 import { showSuccess, showError } from '@/utils/toast';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 export default {
   name: 'FeaturedMedicines',
@@ -151,7 +154,7 @@ export default {
   methods: {
     handleAddToCart(medicine) {
       const user = localStorage.getItem("user");
-    if (!user) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
+    if (!user) {showError("Please login before purchasing any medicines.");router.push(`/login`);return};
       if (!medicine.inStock) return;
       const hasPrescription = localStorage.getItem("has_prescription") === "true";
       if (medicine.prescription && !hasPrescription) {
@@ -165,7 +168,7 @@ export default {
       showSuccess(`${medicine.name} added to cart!`);
     },
     viewDetails(productId) {
-      this.$router.push(`/medicine/${productId}`);
+      router.push(`/medicine/${productId}`);
     },
   },
 };

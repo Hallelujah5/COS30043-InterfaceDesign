@@ -90,6 +90,9 @@ import Navbar from '@/components/Navbar.vue';
 import Footer from '@/components/Footer.vue';
 import { showSuccess, showInfo, showError } from '@/utils/toast';
 import api from '@/api';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const prescriptions = ref([]);
 const searchTerm = ref('');
@@ -103,12 +106,12 @@ onMounted(async () => {
 
   if (!staffId) {
     showError('Staff ID is invalid. Please log in again.');
-    this.$router.push('/');
+    router.push('/');
   }
 
   if (staffrole !== "Pharmacist") {
     showError('Staff role is invalid. Please log in again.');
-    this.$router.push('/');
+    router.push('/');
   }
   try {
     const res = await api.get(`/prescriptions/pharmacist/${staffId}/pending-review`);

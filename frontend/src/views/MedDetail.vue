@@ -74,7 +74,9 @@ import Footer from '@/components/Footer.vue';
 import { useCartStore } from '@/stores/cart';
 import api from '@/api';
 import { showSuccess, showError, showInfo } from '@/utils/toast';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 export default {
   name: 'MedicineDetailPage',
   components: { Navbar, Footer, ShoppingCart, ArrowLeft, Shield, Clock, Truck, AlertTriangle },
@@ -87,7 +89,7 @@ export default {
   },
   methods: {
     goBack() {
-        this.$router.push('/medicines');
+        router.push('/medicines');
     },
     async fetchProduct() {
       try {
@@ -113,7 +115,7 @@ export default {
     },
     handleAddToCart() {
         const user = localStorage.getItem("user");
-      if (!user) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
+      if (!user) {showError("Please login before purchasing any medicines.");router.push(`/login`);return};
       console.log("handleAddToCart triggered.")
       const hasPrescription = localStorage.getItem('has_prescription') === 'true';
       if (this.medicine.is_prescription_required && !hasPrescription) {
@@ -127,10 +129,10 @@ export default {
     },
     handleBuyNow() {
       const user = localStorage.getItem("user");
-      if (!user) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
+      if (!user) {showError("Please login before purchasing any medicines.");router.push(`/login`);return};
       this.handleAddToCart();
       showInfo('Taking you to secure checkout...');
-      this.$router.push('/checkout');
+      router.push('/checkout');
     },
   },
   created() {

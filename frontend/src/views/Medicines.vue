@@ -120,6 +120,9 @@ import { useCartStore } from '@/stores/cart';
 import api from '@/api';
 import { ShoppingCart, Search, Filter, Heart } from 'lucide-vue-next';
 import { showSuccess, showError } from '@/utils/toast';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 export default {
   name: 'MedicinesPage',
@@ -205,7 +208,7 @@ export default {
       const user = localStorage.getItem("user");
       if (!user) {
         showError("You must be logged in to like items.");
-        this.$router.push('/login');
+        router.push('/login');
         return;
       }
       const isCurrentlyFavorited = this.isFavorited(product.product_id);
@@ -238,7 +241,7 @@ export default {
     handleAddToCart(product) {
       // This logic remains the same
       const user = localStorage.getItem("user");
-      if (!user) { showError("Please login before purchasing."); this.$router.push(`/login`); return; };
+      if (!user) { showError("Please login before purchasing."); router.push(`/login`); return; };
       const userParse = user ? JSON.parse(user) : null;
       if (product.is_prescription_required && !userParse?.has_prescription) {
         showError("You need an approved prescription to buy this medicine.");
@@ -248,7 +251,7 @@ export default {
       showSuccess(`${product.name} added to cart!`);
     },
     viewDetails(productId) {
-      this.$router.push(`/medicine/${productId}`);
+      router.push(`/medicine/${productId}`);
     },
     async fetchFavorites() {
       // This logic remains the same
