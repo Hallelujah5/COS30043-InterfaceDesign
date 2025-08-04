@@ -197,7 +197,7 @@ export default {
         localStorage.setItem('user', JSON.stringify(userInfo));
         if (!localStorage.getItem("branch_id")) {localStorage.setItem("branch_id", "1")}
         showSuccess('Login successful!');
-        router.push('/');
+        this.$router.push('/');
       } catch (err) {
         const msg = err.response?.data?.detail || 'Login failed. Please try again.';
         showError(msg);
