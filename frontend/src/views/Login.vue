@@ -224,16 +224,24 @@ export default {
         image_url: null,
       };
 
-      try {
-        showInfo('Registering... Please wait.');
-        const res = await api.post('/customers/register', payload);
-        showSuccess(res.data.message || 'Registration successful!');
-        this.activeTab = 'login';
-      } catch (err) {
-        const msg = err.response?.data?.detail || 'Registration failed.';
-        showError(msg);
-      }
-    },
+     try {
+  showInfo('Registering... Please wait.');
+  const res = await api.post('/customers/register', payload);
+  showSuccess(res.data.message || 'Registration successful!');
+  this.activeTab = 'login';
+} catch (err) {
+  let msg = 'Registration failed.';
+  const detail = err.response?.data?.detail;
+
+  //Check for duplicate email error (MySQL 1062)
+  if (detail?.includes("1062")) {
+    msg = 'Email already exists.';
+  } else if (detail) {
+    msg = detail;
+  }
+
+  showError(msg);
+}}
   },
 };
 </script>
