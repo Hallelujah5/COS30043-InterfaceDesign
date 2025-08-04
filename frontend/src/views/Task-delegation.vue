@@ -129,7 +129,7 @@ onMounted(async () => {
   }
 
   if (staffrole !== "BranchManager") {
-    showError('Staff role is invalid. Please log in again.');router.push('/');
+    showError('403 Forbidden');router.push('/');
     return;
   }
 

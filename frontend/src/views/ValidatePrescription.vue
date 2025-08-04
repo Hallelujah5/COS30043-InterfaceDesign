@@ -110,7 +110,7 @@ onMounted(async () => {
   }
 
   if (staffrole !== "Pharmacist") {
-    showError('Staff role is invalid. Please log in again.');
+    showError('403 Forbidden');
     router.push('/');
   }
   try {
