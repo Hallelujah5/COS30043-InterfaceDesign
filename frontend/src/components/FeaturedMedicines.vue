@@ -168,7 +168,7 @@ export default {
       showSuccess(`${medicine.name} added to cart!`);
     },
     viewDetails(productId) {
-      router.push(`/medicine/${productId}`);
+      this.$router.push(`/medicine/${productId}`);
     },
   },
 };
