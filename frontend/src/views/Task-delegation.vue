@@ -114,7 +114,7 @@ const getAssignedName = (staffId, list) => {
 };
 
 const goToManagerDashboard = () => {
-  router.push('/manager-dashboard');
+  this.$router.push('/manager-dashboard');
 };
 
 onMounted(async () => {
@@ -124,12 +124,12 @@ onMounted(async () => {
   const staffrole = staffJSON?.role;
 
   if (!staffId) {
-    showError('Staff ID is invalid. Please log in again.');router.push('/');
+    showError('Staff ID is invalid. Please log in again.');this.$router.push('/');
     return;
   }
 
   if (staffrole !== "BranchManager") {
-    showError('403 Forbidden');router.push('/');
+    showError('403 Forbidden');this.$router.push('/');
     return;
   }
 

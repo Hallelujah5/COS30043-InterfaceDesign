@@ -138,7 +138,7 @@ export default {
   },
   created() {
     const storedUser = localStorage.getItem('user');
-    if (!storedUser) {showError("Please login before purchasing any medicines.");router.push(`/login`);return};
+    if (!storedUser) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
     if (storedUser) {
       const customer = JSON.parse(storedUser);
       this.fetchUnpaidOrders(customer.user_id);

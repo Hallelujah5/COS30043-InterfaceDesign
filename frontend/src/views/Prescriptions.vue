@@ -132,7 +132,7 @@ export default {
       const token = localStorage.getItem('accessToken');
         if (!token) {
         showError('You must be logged in to upload a prescription.');
-        router.push('/login');
+        this.$router.push('/login');
         return;
       }
       
@@ -160,7 +160,7 @@ export default {
     // This hook checks if the user is logged in when the component is created.
     if (!localStorage.getItem('accessToken')) {
       showError('Please log in to access this page.');
-      router.push('/login');
+      this.$router.push('/login');
     }
   },
 };

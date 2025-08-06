@@ -163,7 +163,7 @@ export default {
       this.$router.back();
     },
     goToMedicines() {
-      router.push('/medicines');
+      this.$router.push('/medicines');
     },
     handleQuantityChange(id, newQuantity) {
       if (newQuantity <= 0) {
@@ -198,7 +198,7 @@ export default {
         await api.post('/orders/place', payload);
         showSuccess('Order placed successfully!');
         this.cartStore.clearCart();
-        router.push('/');
+        this.$router.push('/');
       } catch (err) {
         const msg = err.response?.data?.detail || 'Failed to place order.';
         showError(msg);
@@ -207,7 +207,7 @@ export default {
   },
   created(){
       const user = localStorage.getItem("user");
-      if (!user) {showError("Please login before purchasing any medicines.");router.push(`/login`);return};
+      if (!user) {showError("Please login before purchasing any medicines.");this.$router.push(`/login`);return};
   }
 };
 </script>

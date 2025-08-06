@@ -106,12 +106,12 @@ onMounted(async () => {
 
   if (!staffId) {
     showError('Staff ID is invalid. Please log in again.');
-    router.push('/');
+    this.$router.push('/');
   }
 
   if (staffrole !== "Pharmacist") {
     showError('403 Forbidden');
-    router.push('/');
+    this.$router.push('/');
   }
   try {
     const res = await api.get(`/prescriptions/pharmacist/${staffId}/pending-review`);

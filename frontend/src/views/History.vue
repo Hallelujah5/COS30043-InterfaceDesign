@@ -131,7 +131,7 @@ export default {
         const token = localStorage.getItem('accessToken');
           if (!token){
           showError('Please log in to view your orders.');
-          router.push('/login');
+          this.$router.push('/login');
           return;
         }
         const { user_id: customerId } = JSON.parse(userData);

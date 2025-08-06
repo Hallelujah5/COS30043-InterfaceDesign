@@ -129,7 +129,7 @@ export default {
       console.log("fetching user in /profile...")
       const data = localStorage.getItem('user');
       console.log("User fetched: ", data);
-      if (!data) return router.push('/login');
+      if (!data) return this.$router.push('/login');
       const parsed = JSON.parse(data);
       console.log("Parsed data: ", parsed);
       try {
@@ -145,7 +145,7 @@ export default {
         };
       } catch (error) {
         showError('Could not load customer information.');
-        router.push('/login');
+        this.$router.push('/login');
       }
     },
     async fetchBranches() {
